@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Runtime and Security Model for Web Applications</title>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+    <script src="http://www.w3.org/Tools/respec/respec-w3c-common" class="remove"></script>
+    <script class='remove'>
+      var respecConfig = {
+        specStatus:           "unofficial",
+        //shortName:            "runtime",
+
+        // TODO
+        //publishDate:  "2012-12-12",
+        //previousPublishDate:  "2011-06-07",
+        //previousMaturity:     "ED",
+        edDraftURI: "http://sysapps.github.com/runtime/Overview.html",
+
+        // if this is a LCWD, uncomment and set the end of its review period
+        // lcEnd: "2009-08-05",
+        extraCSS:   ["../ReSpec.js/css/respec.css"],
+        noIDLIn:    true,
+
+        editors: [
+            {
+              name: "Mounir Lamouri",
+              company: "Mozilla",
+              companyURL: "http://mozilla.org/"
+            },
+            {
+              name: "金明 (Ming Jin)",
+              company: "Samsung Electronics, Co., Ltd",
+              companyURL: "http://www.samsung.com/sec"
+            },
+        ],
+
+        wg:           "System Applications Working Group",
+        wgURI:        "http://www.w3.org/2012/sysapps/",
+        wgPublicList: "public-sysapps",
+        wgPatentURI:  "http://www.w3.org/2004/01/pp-impl/58119/status"
+      };
+    </script>
+    <style>
+      todo { display: none; }
+    </style>
+  </head>
+
+  <body>
+    <section id='abstract'>
+      This document specifies the runtime and security model of Web Applications.
+      It is describing how an application is defined trough an application
+      manifest, how it can be installed, updated and packaged. It is also
+      specifying how such an application can put in background, put back in
+      foreground or waken up.<br>
+      Finaly, the document describes the security model for such applications.
+      This includes the permission model and the different security rules that
+      would apply.
+    </section>
+
+    <section>
+      <h2>Terminology</h2>
+      <p>
+        The <dfn><a href="http://dev.w3.org/html5/spec/webappapis.html#event-handlers">
+        EventHandler</a></dfn> interface represents a callback used for event
+        handlers as defined in [[!HTML5]].
+      </p>
+      <!--
+      <p>
+        The concepts <dfn><a href="http://dev.w3.org/html5/spec/webappapis.html#queue-a-task">
+        queue a task</a></dfn> and
+        <dfn><a href="http://dev.w3.org/html5/spec/webappapis.html#fire-a-simple-event">
+        fire a simple event</a></dfn> are defined in [[!HTML5]].
+      </p>
+      -->
+      <p>The concept of <dfn><a href='http://dev.w3.org/html5/spec/webappapis.html#fire-a-simple-event'>
+      fire a simple event</a></dfn> is defined in [[!HTML5]].</p>
+
+      <p>
+        The terms <dfn> <a href="http://dev.w3.org/html5/spec/webappapis.html#event-handlers">
+        event handlers</a></dfn> and
+        <dfn><a href="http://dev.w3.org/html5/spec/webappapis.html#event-handler-event-type">
+        event handler event types</a></dfn> are defined in [[!HTML5]].
+      </p>
+
+      <p>The <dfn><a href='http://dvcs.w3.org/hg/domcore/raw-file/tip/Overview.html/#interface-domerror'>
+      DOMError</a></dfn> interface represents an error handling object as
+      defined in [[!DOM4]].
+    </section>
+
+    <section>
+      <h2>Application Manifest</h2>
+
+      <p>An <dfn>application manifest</dfn> is a JSON file describing an
+      installable web application. This JSON file consists of a top-level object
+      and several properties. The JSON grammar is described in [[!RFC4627]].</p>
+
+      <pre class="example highlight">
+      {
+        "name": "MozillaBall",
+        "description": "Exciting Open Web development action!",
+        "launch_path": "/",
+        "version": "1.0",
+        "icons": {
+          "16": "/img/icon_16.png",
+          "48": "/img/icon_48.png",
+          "128": "/img/icon_128.png"
+        },
+        "developer": {
+          "name": "Mozilla",
+          "url": "https://mozilla.org/en-US"
+        },
+        "appcache_path": "/cache.manifest",
+        "locales": [
+          "es": {
+            "description": "¡Acción abierta emocionante del desarrollo del Web!",
+            "developer": {
+              "url": "https://mozilla.org/es-ES"
+            }
+          }
+        ],
+        "default_locale": "en",
+        "screen_size": {
+          "min_width": "600",
+          "min_height": "300"
+        },
+        "required_features": [
+          "touch", "geolocation", "webgl"
+        ],
+        "permissions": {
+          "contacts": {
+            "description": "Required for autocompletion in the share screen",
+            "access": "read"
+          }
+        },
+        "fullscreen": "true",
+        "relNotes": {
+          "1.0": "Bugs fixed. New exciting effects. Ready for an official release!"
+          "0.5": "First alpha version with still some bugs but already fun!"
+        }
+      }
+      }
+      </pre>
+
+      <section>
+        <h2>Properties</h2>
+
+        <section>
+          <h2>Adding new properties to the manifest</h2>
+
+          <p>Any new specification can add new properties to the <a>application
+          manifest</a>. Those specifications MUST describe the new properties,
+          the expected values and the expected behaviour. Implementations MUST
+          implement the basic properties as describe below but SHOULD only
+          implement any extented feature if they are implementing those
+          specifications.</p>
+        </section>
+
+        <section>
+          <h2>Basic properties</h2>
+
+        <p>All leaf properties MUST contain a string value unless specified
+           otherwise.</p>
+        <p>The following properties MUST be part of the <a>application
+           manifest</a>: <code>name</code> and <code>description</code>.
+           In addition, if <code>locales</code> is part of the <a>application
+           manifest</a>, <code>default_locale</code> MUST be part of the <a>
+           application manifest</a>. The other properties are optional.</p>
+
+        <ul class="properties">
+          <li><dfn id="propdef-name">name</dfn>: The name of the web application
+          in the default locale. The name SHOULD not be longer than 128
+          characters.</li>
+
+          <li><dfn id="propdef-description">description</dfn>: A short
+          description of the web application. The description MUST be in the
+          default locale. The description SHOULD not be longer than 1024
+          characters.</li>
+
+          <li><dfn id="propdef-default_locale">default_locale</dfn>: The
+          property's value MUST be the top-level name and description's locale.
+          </li>
+
+          <li><dfn id="propdef-launch_path">launch_path</dfn>: The property's
+          value MUST be the path within the <a>application's origin</a> that is loaded
+          when the application is launched.</li>
+
+          <li><dfn id="propdef-icons">icons</dfn>: A map of icon sizes to URIs of
+          the icons (which may be absolute, relative or data URIs). Icons MUST be
+          square. Relative URLs MUST use the <a>application manifest</a> URL as
+          base URL.</li>
+
+          <li>
+            <dfn id="propdef-developer">developer</dfn>: This property describe
+            the developer of the application and MUST contain the following
+            properties:
+
+            <ul>
+              <li><dfn id="propdef-developer-name">name</dfn>: The value MUST
+              contain the name of the developer.</li>
+
+              <li><dfn id="propdef-url">url</dfn>: The value MUST contain an URL
+              pointing to the developer's website</li>
+            </ul>
+          </li>
+
+          <li>
+            <dfn id="propdef-locales">locales</dfn>: The property's value MUST
+            contain a map of locale specific overrides of strings contained in
+            the <a>application manifest</a>. Each locale key is keyed on a
+            locale tag [[!RFC4646]], and contains a sparse representation of the
+            manifest. Any field in the <a>locales</a> property SHOULD override
+            the corresponding property in a localized user interface. The UA
+            MAY ignore some values if localizing the property doesn't appear
+            to be legit.<br>
+            If the <a>locales</a> property is set, the <a>default_locale</a>
+            MUST also be set.
+          </li>
+
+<!-- Commented because it is a controversial feature.
+          <li><dfn id=
+          "propdef-installs_allowed_from">installs_allowed_from</dfn>: An array
+          of origins that are allowed to trigger installation of this
+          application. This field allows the developer to restrict installation
+          of their application to specific sites. If the value is omitted,
+          installs are allowed from any site.</li>
+-->
+
+          <li>
+            <dfn id="propdef-appcache_path">appcache_path</dfn>: The value MUST
+            contain the absolute path to the application cache manifest
+            [[!OFFLINE-WEBAPPS]].<br>
+            When an application is installed, the AppCache manifest will be
+            fetched and parsed, and its static assets under the CACHE header
+            MUST be cached.
+          </li>
+
+          <li><dfn id="propdef-version">version</dfn>: The value MUST be a
+          string that represents the version of the application. The UA SHOULD
+          NOT interpret this value but MAY show it to the user so the auther
+          SHOULD use human understandable versions.</dfn>
+
+          <li><dfn id="propdef-screen_size">screen_size</dfn>: This object
+          SHOULD contain the <code>min_height</code> and <code>min_width</code>
+          properties that describe the minimum height and width (in pixels) the
+          application needs in order to render correctly. Those values are only
+          hint for the UA and should not be considered as mandatory
+          restrictions.</li>
+
+          <li><dfn id="propdef-required_features">required_features</dfn>: This
+          value MUST be an array containing the mandatory feature set the
+          application needs in order to run correctly. If the property is
+          missing or the value is an empty array or if the value is invalid, the
+          mandatory feature set SHOULD be considered as the empty set.<br>
+          <span style='color: red;'>TBD: add a list of features.</span></li>
+
+<!-- Commented because it might hopefully go to the Screen Orientation API spec.
+          <li>
+            <dfn id="propdef-orientation">orientation</dfn>: This value defines
+            the allowed orientations at which the application may be rendered. If
+            a value is provided, the runtime MUST ensure that the viewport
+            rendering the application will adhere to one of the specified values
+            and never orient the application in a direction not specified in this
+            property. The default behavior SHOULD be to rotate the viewport at an
+            angle that best fits the orientation of the device, and MUST change
+            as the user spatially rotates the device. The value MUST be an
+            array containing one or more of the following string values
+            (duplicates SHOULD be ignored):
+
+            <ul>
+              <li><dfn id=
+              "propdef-orientation-portrait-primary">portrait-primary</dfn>:
+              Locked to a single portrait direction. If the device has an obvious
+              primary orientation in portrait mode, this is that orientation. If
+              there is no obvious primary orientation due to landscape being the
+              primary orientation for the device, this is the orientation if
+              rotating the device 90 degrees clock-wise from the primary
+              landscape mode.</li>
+
+              <li><dfn id=
+              "propdef-orientation-landscape-primary">landscape-primary</dfn>:
+              Locked to a single landscape direction. If the device has an
+              obvious primary orientation in landscape mode, this is that
+              orientation. If there is no obvious landscape orientation due to
+              portrait being the primary orientation for the device, this is the
+              orientation if rotating the device 90 degrees clock-wise from the
+              primary portrait mode.</li>
+
+              <li>
+                <dfn id=
+                "propdef-orientation-portrait-secondary">portrait-secondary</dfn>:
+                The portrait mode opposite of <a>portrait-primary</a>.
+              </li>
+
+              <li>
+                <dfn id=
+                "propdef-orientation-landscape-secondary">landscape-secondary</dfn>:
+                The landscape mode opposite of <a>landscape-primary</a>.
+              </li>
+
+              <li><dfn id="propdef-orientation-portrait">portrait</dfn>:
+              Equivalent to
+              <code>["portrait-primary", "portrait-secondary"]</code>.</li>
+
+              <li><dfn id="propdef-orientation-landscape">landscape</dfn>:
+              Equivalent to
+              <code>["landscape-primary", "landscape-secondary"]</code>.</li>
+            </ul>
+          </li>
+-->
+
+          <li><dfn id="propdef-fullscreen">fullscreen</dfn>: This value MUST be
+          set to either <dfn>true</dfn> or <dfn>false</dfn> to describe whether
+          the runtime should launch the application in fullscreen mode.</li>
+
+          <li><dfn id='propdef-relnotes'>relNotes</dfn>: This property's value
+          MUST contain a map associating an application's version with a string
+          describing the changes between that version and the previous one.</li>
+
+          <li><dfn id="propdef-permisssions">permissions</dfn>: This value
+          consists of a set of permissions that the application needs. An
+          application SHOULD list every API that is considered to require user
+          permission in this field. Usage of an API without a corresponding
+          entry in the manifest SHOULD fail. The field is an object, with each
+          property name specifying a single permission, and object containing
+          the following fields:
+
+            <ul>
+              <li>
+                <dfn id="propdef-permissions-desc">description</dfn>: Contains
+                a human readable string specifying the intent behind requesting
+                use of this API. This property is mandatory.
+              </li>
+              <li>
+                <dfn id="propdef-permissions-access">access</dfn>: Contains a
+                a string specifying the type of access required for this
+                permission. This field is mandatory for a certain subset of
+                permissions, and MUST be one of <dfn>read</dfn>,
+                <dfn>readwrite</dfn>, <dfn>readcreate</dfn>, or
+                <dfn>createonly</dfn>.
+              </li>
+            </ul>
+
+            <p>Each specification MUST specify the new permissions that would be
+            required to use the feature it is defining.</p>
+          </li>
+
+<!-- Commented because it should go to the Web Intents/Web Activities spec.
+          <li><dfn id="propdef-activities">activities</dfn>: This value specifies
+          a set of
+          <a href="https://wiki.mozilla.org/WebAPI/WebActivities">WebActivities</a>
+          that this app supports. Each property in this value is a discrete
+          activity whose name matches the property name. Activity names are
+          free-form text, and each activity is represented by an object. This
+          object MUST contain the following property:
+
+          <ul>
+            <li><dfn id="propdef-activities-href">href</dfn>: When another app
+            or web page initiates an activity that is supported by this app, if
+            this app is chosen to perform the activity, this page will be opened
+            in the manner specified by the <dfn>disposition</dfn> property. The
+            manner in which a particular app is chosen to perform an activity is
+            out of scope for this specification.</li>
+          </ul>
+
+          An activity object MAY also contain the following properties:
+
+          <ul>
+            <li><dfn id="propdef-activites-disposition">disposition</dfn>: This
+            value specifies how the page specified in <dfn>href</dfn> is presented
+            when an activity is invoked. The value, if specified, MUST be one of
+            the following (if omitted, defaults to <dfn>window</dfn>):
+              <ul>
+                <li><dfn id="propdef-activities-disposition-window">window</dfn>:
+                The page handling the activity is opened in a new "window" (on a
+                mobile device, for example, this view will replace the original
+                app that requested the activity). The page MUST call
+                <code>navigator.setMessageHandler</code> for each activity it
+                supports and subsequently execute the activity for which it
+                receives a message. Further, if the activity requires a return
+                value, the page MUST call <code>activity.postResult</code> or
+                <code>activity.postError</code> (where <code>activity</code> is
+                the first argument provided to the function specified by
+                <code>setMessageHandler</code>) as appropriate. These functions
+                are specified in greater details in the WebActivities
+                document.</li>
+
+                <li><dfn id="propdef-activities-disposition-inline">inline</dfn>:
+                The page handling the activity will open in an overlay (on a
+                mobile device, for example, this will be rendered in a popup over
+                the original app that requested the activity). Subsequent behavior
+                is exactly the same as if the disposition were
+                <dfn>window</dfn>.</li>
+              </ul>
+
+            <li><dfn id="propdef-activities-filters">filters</dfn>:
+            <i>OPTIONAL</i>. This value is a dictionary, each property of which
+            specified a particular filter. These filters will be applied while
+            determining apps suitable for handling a given activity. Filter names
+            are free-form text, but their values MUST be either a string or an
+            array of strings (the exact type depends on the filter).</li>
+          </ul>
+-->
+        </ul>
+
+        <p>The <dfn>application's origin</dfn> is the origin of the <a>application
+        manifest</a>. [[!ORIGIN]]</p>
+
+        </section>
+      </section>
+
+      <section>
+        <h2>Serving Manifests</h2>
+
+        <p>An <a>application manifest</a> MUST be served from the same origin as
+           the application.</p>
+
+        <p>When served as a static file, it is RECOMMENDED that the manifest is
+        stored with the extension <code>.webapp</code>. The manifest MUST be
+        served with a <i>Content-Type</i> header of
+        <code>application/x-web-app-manifest+json</code>. It is RECOMMENDED that
+        <a>application manifests</a> are served over SSL.</p>
+      </section>
+    </section>
+
+    <section>
+      <h2>Application Management</h2>
+
+        <section>
+          <h2><a>Application</a> interface</h2>
+
+          <section>
+          <p>Web Applications are represented by the <a>Application</a>
+             interface.</p>
+
+          <dl title='interface Application' class='idl'>
+            <dt>readonly attribute DOMString origin</dt>
+            <dd>The attribute MUST return the <a>application's origin</a>.</dd>
+
+            <dt>readonly attribute Object manifest</dt>
+            <dd>The attribute MUST return an object representing the parsed
+                <a>application manifest</a>.</dd>
+
+            <dt>readonly attribute DOMString installOrigin</dt>
+            <dd>The attribute MUST return the origin of the page from which the
+                application was installed. [[!ORIGIN]]</dd>
+
+            <dt>readonly attribute unsigned long installTime</dt>
+            <dd>The attribute MUST return the time in milliseconds since epoch
+                at which the application was installed.</dd>
+
+            <dt>readonly attribute Object parameters</dt>
+            <dd>The attribute MUST return the parameters that were provided
+                at install time. See <code>install()</code> in
+                <a>ApplicationRegistry</a>.</dd>
+
+            <dt><a>DOMRequest</a> launch()</dt>
+            <dd>This method MUST return a <a>DOMRequest</a> instance and then run the following steps asynchronously:
+                <ol>
+                  <li>If the caller isn't allowed by the UA to launch the
+                      application, the UA MUST fire an <code>error</code> event
+                      to the <a>DOMRequest</a> object with the
+                      <code>"NotAllowedError"</code> error code and exit those
+                      steps.</li>
+                  <li>If the caller is allowed to launch the application, the
+                      UA SHOULD launch the application.</li>
+                  <li>If the application has been successfuly launched, the UA
+                      MUST fire a <code>success</code> event to the
+                      <a>DOMRequest</a> object and set <code>result</code> to
+                      null.<br>
+                      Otherwise, the UA MUST fire an <code>error</code> event
+                      to the <a>DOMRequest</a> object with an error code that
+                      describes the error.</li>
+                </ol>
+            </dd>
+
+            <dt><a>DOMRequest</a> uninstall()</dt>
+            <dd>This method MUST return a <a>DOMRequest</a> instance and then run the following steps asynchronously:
+                <ol>
+                  <li>If the application isn't currently installed, the UA MUST
+                      fire an <code>error</code> event to the <a>DOMRequest</a>
+                      object with the <code>"NotInstalledError"</code> error code
+                      and exit those steps.</li>
+                  <li>If the caller isn't allowed by the UA to uninstall the
+                      application, the UA MUST fire an <code>error</code> event
+                      to the <a>DOMRequest</a> object with the
+                      <code>"NotAllowedError"</code> error code and exit those
+                      steps.</li>
+                  <li>If the caller is allowed to uninstall the application,
+                      the UA SHOULD uninstall the application.</li>
+                  <li>If the application has been successfuly uninstalled, the
+                      UA MUST fire a <code>success</code> event to the
+                      <a>DOMRequest</a> object and set <code>result</code> to
+                      null.<br>
+                      Otherwise, the UA MUST fire an <code>error</code> event
+                      to the <a>DOMRequest</a> object with an error code that
+                      describes the error.</li>
+                </ol>
+            </dd>
+
+            <!-- Update-related API -->
+
+            <dt>readonly attribute DOMString updateState</dt>
+            <dd>The attribute MUST return the empty string,
+            <code>available</code>, <code>downloading</code>,
+            <code>downloaded</code> or <code>installing</code>, depending on the
+            state of the application.<br>
+            If the application is being updated, the attribute MUST return
+            <code>installing</code>.<br>
+            If the application is ready to be updated, with the updtade fully
+            downloaded or if there is no download to proceed to the update, the
+            attribute MUST return <code>downloaded</code>.<br>
+            If the application's update is being downloaded, the attribute MUST
+            return <code>downloading</code>.<br>
+            If there is an application update available, it is not being
+            installed, nor downloaded, nor downloading, the attribute MUST
+            return <code>available</code>.
+            Otherwise, the attribute MUST return the empty string.</dd>
+
+            <dt>readonly attribute unsigned long downloadSize</dt>
+            <dd>The attribute SHOULD return the size of the download that would be
+            required to update the application in kilobytes, if any. If the
+            application doesn't have have an available update, if the download
+            has already been done or if the UA can't find out the size of the
+            download required for the update, the attribute MUST return 0.<br>
+            If the download is happening, the attribute MUST return 0.<br>
+            If the download has been made but interupted and the UA is able to
+            continue it, the attribute SHOULD return the remaining size to
+            download.</dd>
+
+            <dt>DownloadRequest downloadUpdate()</dt>
+            <dd>The method MUST return a <a>DownloadRequest</a> object and
+            asynchronously run the following steps:
+            <ol>
+              <li>If the application doesn't have an available update, the UA
+              MUST send an <a>error message</a> to the request object with the
+              value <code>InvalidState</code> and abort these steps.</li>
+              <li>If the application doesn't require a download to process the
+              update, the UA MUST send a <a>succes message</a> to the request
+              object with no value and abort these steps.</li>
+              <li>If the application's update is currently being downloaded, the
+              request MUST reflect the current state of the download. Otherwise,
+              the request must <a>start the download</a>.</li>
+            </ol>
+            </dd>
+
+            <!-- Execution states related API -->
+
+            <dt>readonly attribute DOMString state;</dt>
+            <dd>The attribute MUST return <code>running</code> if the
+            current application state is <a>running</a>. Otherwise, if the
+            current application state is <a>paused</a>, it MUST return
+            <code>paused</code>. Otherwise, it MUST return
+            <code>terminated</code>.</dd>
+
+            <dt>void hide()</dt>
+            <dd>When this method is called, the UA SHOULD hide the application
+            from the user. Hiding the application SHOULD fire visibility events
+            as described in [[!PAGE-VISIBILITY]].<br>
+            If the application was already not visible, this method MUST be a
+            no-op.</dd>
+
+            <dt>void exit()</dt>
+            <dd>When this method is called, the UA MUST put the application
+            state to <a>terminated</a> and fire the appropriate events.<br>
+            If the application was already in the <a>terminated</a> state, this
+            method MUST be a no-op.</dd>
+
+            <dt>attribute EventHandler onlaunch</dt>
+            <dd></dd>
+
+            <dt>attribute EventHandler onpause</dt>
+            <dd></dd>
+
+            <dt>attribute EventHandler onresume</dt>
+            <dd></dd>
+
+            <dt>attribute EventHandler onterminate</dt>
+            <dd></dd>
+
+          </dl>
+          </section>
+
+          <p>The following are the <a>event handlers</a> (and their
+          corresponding <a>event handler event types</a>) that MUST be supported
+          as attributes by the <code>Application</code> objects:</p>
+
+          <table class="simple">
+            <thead>
+              <tr>
+                <th>event handler</th>
+                <th>event handler event type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong><code>onlaunch</code></strong></td>
+                <td><code>launch</code></td>
+              </tr>
+              <tr>
+                <td><strong><code>onpause</code></strong></td>
+                <td><code>pause</code></td>
+              </tr>
+              <tr>
+                <td><strong><code>onresume</code></strong></td>
+                <td><code>resume</code></td>
+              </tr>
+              <tr>
+                <td><strong><code>onterminate</code></strong></td>
+                <td><code>terminate</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section>
+          <h2><a>DownloadRequest</a> interface</h2>
+
+          <section>
+          <dl title='interface DownloadRequest : DOMRequest' class='idl'>
+            <dt>void cancel()</dt>
+            <dd>This method MUST stops the download and asynchronously send an
+            <a>error message</a> to itself with the value
+            <code>UserCancel</code>.</dd>
+
+            <dt>attribute double progress</dt>
+            <dd>If the current state is <code>error</code> the attribute MUST
+            return 0.0. Otherwise, if the current state is <code>success</code>,
+            the attribute MUST return 1.0. Otherwise, the attribute SHOULD
+            return the current progress of the download expressed between 0.0
+            and 1.0.</dd>
+
+            <dt>attribute EventHandler onprogress</dt>
+          </dl>
+
+          <p>When the caller <dfn>start the download</dfn>, the
+          <a>DownloadRequest</a> SHOULD start downloading the resource.</p>
+
+          <p>If the resource fails to download, the UA MUST send an <a>error
+          message</a> to the request.<br>
+          <p>If the resource succeed to download, the UA MUST send a <a>success
+          message</a> to the request.</p>
+
+          <p>While the resource is downloading, which means as long as
+          <code>readyState</code> is <code>pending</code>, the UA SHOULD
+          regularly <a>fire a simple event</a> named <a>progress</a> on the
+          object. The UA should note that sending too much events might have an
+          impact on performance but sending too few of them might impact the
+          user experince.</p>
+
+          <p>The following are the <a>event handlers</a> (and their
+          corresponding <a>event handler event types</a>) that MUST be supported
+          as attributes by the <code>DOMRequest</code> objects:</p>
+
+          <table class="simple">
+            <thead>
+              <tr>
+                <th>event handler</th>
+                <th>event handler event type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong><code>onprogress</code></strong></td>
+                <td><code>progress</code></td>
+              </tr>
+            </tbody>
+          </table>
+
+          </section>
+        </section>
+
+        <section>
+          <h2>Extension to the <a>Navigator</a> interface</h2>
+
+          <section>
+          <p>An <a>ApplicationRegistry</a> instance is exposed on the
+             <code>Navigator</code> object trough the an <code>app</code>
+             attribute.</p>
+
+          <dl title='partial interface Navigator' class='idl'>
+            <dt>readonly attribute ApplicationRegistry app</dt>
+            <dd>The attribute MUST return an <a>ApplicationRegistry</a> instance.</dd>
+          </dl>
+          </section>
+        </section>
+
+        <section>
+          <h2><a>ApplicationRegistry</a> interface</h2>
+
+          <section>
+          <p>The <a>ApplicationRegistry</a> interface allows handling
+             applications and query there status.</p>
+
+          <dl title='interface ApplicationRegistry' class='idl'>
+            <dt>DOMRequest install(in DOMString manifestUrl, [Optional] in Object
+            parameters)</dt>
+            <dd>This method MUST return a <a>DOMRequest</a> instance and then run the following steps asynchronously:
+              <ol>
+                <li>If the caller isn't allowed by the UA to install the
+                    application, the UA MUST fire an <code>error</code> event
+                    to the <a>DOMRequest</a> object with the
+                    <code>"NotAllowedError"</code> error code and exit those
+                    steps.</li>
+                <li>If the caller is allowed to install the application, the
+                    UA SHOULD install the application as described in the
+                    manifest at <code>manifestUrl</code>.</li>
+                <li>If the application has been successfuly installed, the UA
+                    MUST fire a <code>success</code> event to the
+                    <a>DOMRequest</a> object and set <code>result</code> to
+                    null.<br>
+                    Otherwise, the UA MUST fire an <code>error</code> event
+                    to the <a>DOMRequest</a> object with an error code that
+                    describes the error.</li>
+              </ol>
+              <p>The UA SHOULD verify at any moment before installing that
+                 <code>manifestUrl</code> points to a valid manifest. If this is
+                 not the case, the UA MUST fire an <code>error</code> event to
+                 the <a>DOMRequest</a> object with the
+                 <code>"InvalidArgumentError"</code> and exit the steps.</p>
+              <p>The UA SHOULD save the <code>parameters</code> if some are
+                 passed so they can later be retrieved by the
+                 <code>parameters</code> attribute on the <a>Application</a>
+                 interface.</p>
+            </dd>
+
+            <dt>DOMRequest getSelf()</dt>
+            <dd>The UA SHOULD return a <a>DOMRequest</a> object and
+                asynchronously get all applications that have an origin matching
+                the caller's origin. [[!ORIGIN]]<br>
+                When those applications are collected, the UA SHOULD send a
+                <code>success</code> event to the <a>DOMRequest</a> object and
+                populate its <code>request</code> attribute with an array
+                containing the applications.</dd>
+
+            <dt>DOMRequest getInstalled()</dt>
+            <dd>The UA SHOULD return a <a>DOMRequest</a> object and
+                asynchronously get all applications that have an origin matching
+                the caller's origin. [[!ORIGIN]]<br>
+                When those applications are collected, the UA SHOULD send a
+                <code>success</code> event to the <a>DOMRequest</a> object and
+                populate its <code>request</code> attribute with an array
+                containing the applications.</dd>
+
+            <dt>DOMRequest checkInstalled(DOMString manifestURL)</dt>
+            <dd>The UA SHOULD return a <a>DOMRequest</a> object and
+            asynchronously check if there is an installed application in the
+            system with a manifest URL matching <i>manifestURL</i>.<br>
+            After the asynchronous operation is done,, the IA SHOULD send a
+            <code>success</code> event to the <a>DOMRequest</a> object and
+            populate its <code>result</code> attribute with the boolean value
+            true if there is an installed application fulfilling the condition,
+            otherwise <code>result</code> should be set to false.</dd>
+
+            <todo>
+              checkInstalled() could be synchronous. Seems way more convevient.
+            </todo>
+
+            <todo>
+              <ul>
+                <li>What's the real difference between getSelf() and getInstalled()?</li>
+                <li>Can an application be not installed but still in the registry? How?</li>
+              </ul>
+            </todo>
+
+            <dt>attribute ApplicationManagement management</dt>
+            <dd>If the caller isn't allowed to manage applications, the UA MUST
+                return null. Otherwise, it MUST return an
+                <a>ApplicationManagement</a> object.</dd>
+
+            <todo>
+              <ul>
+                <li>Permission check isn't clearly defined here. Should it be better?</li>
+              </ul>
+            </todo>
+
+          </dl>
+          </section>
+        </section>
+
+      <section>
+        <h2><a>ApplicationManagement</a> interface</h2>
+
+        <section>
+          <p>The <a>ApplicationManagement</a> interface allows access to all
+             applications and is being informed any time an application is being
+             installed or uninstalled. The intent of this interface is to be
+             restricted to privileged callers.</p>
+
+          <dl title='interface ApplicationManagement' class='idl'>
+            <dt>DOMRequest getAll()</dt>
+            <dd>The UA SHOULD return a <a>DOMRequest</a> object and
+                asynchronously get all applications currently in the application
+                registry.<br>
+                When those applications are collected, the UA SHOULD send a
+                <code>success</code> event to the <a>DOMRequest</a> object and
+                populate its <code>request</code> attribute with an array
+                containing the applications.</dd>
+
+            <dt>[TreatNonCallableAsNull] attribute EventHandler oninstall</dt>
+            <dd>This value may be set to a function that will be invoked when an
+            application is installed. The only argument to this function will be
+            the <code>AppObject</code> of the application that was installed.</dd>
+
+            <dt>[TreatNonCallableAsNull] attribute EventHandler onuninstall</dt>
+            <dd>This value may be set to a function that will be invoked when an
+            application is uninstalled. The only argument to this function be the
+            <code>AppObject</code> of the application that was uninstalled.</dd>
+
+            <!-- Update-related API -->
+
+            <dt>DOMRequest applyUpdate(Application application)</dt>
+            <dd>The method MUST return a <a>DOMRequset</a> object and perform
+            the following steps asynchronously:
+            <ol>
+              <li>If the application doesn't have an updated or the updated
+              isn't fully downloaded, the UA MUST send an <a>error message</a>
+              to the request with the value <code>InvalidState</code> and abort
+              these steps.</li>
+              <li>Stop <i>application</i> from running if it is currently
+              running.</li>
+              <li>Replace the previous version with the new version of the
+              application.</li>
+              <li>If an error has occured during the previous steps, the UA MUST
+              send an <a>error message</a> to the request with any appropriate
+              value. Otherwise, the UA MUST send a <a>success message</a> to the
+              request with an <a>Application</a> object representing the updated
+              application as a value.</li>
+            </ol>
+            </dd>
+
+          </dl>
+        </section>
+
+        <section>
+          <h2>Events</h2>
+          <p>
+            An <a>install</a> event MUST be fired on all
+            <a>ApplicationManagement</a> instances as soon as an application is
+            installed.
+          </p>
+
+          <p>
+            The <a>uninstall</a> event MUST be fired on all
+            <a>ApplicationManagement</a> instances as soon as an application is
+            uninstalled.
+          </p>
+
+          <p>
+            The following are the <a>event handlers</a> (and their corresponding
+            <a>event handler event types</a>) that MUST be supported as
+            attributes by the <code>ApplicationManagement</code> object:
+          </p>
+
+          <table class="simple">
+            <thead>
+              <tr>
+                <th>event handler</th>
+                <th>event handler event type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong><code>oninstall</code></strong></td>
+                <td><code>install</code></td>
+              </tr>
+              <tr>
+                <td><strong><code>onuninstall</code></strong></td>
+                <td><code>uninstall</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+      </section>
+
+      <section>
+        <h2>Application Event Types</h2>
+
+        <p>Application Events are sent when an event happen on the application
+        level like an application being installed or uninstalled.</p>
+
+        <section>
+          <dl title='[Constructor(DOMString type, Application eventInitDict)]
+                    interface ApplicationEvent : Event' class='idl'>
+            <dt>readonly attribute Application application</dt>
+            <dd></dd>
+          </dl>
+          <dl title='dictionary ApplicationEventInit : EventInit' class='idl'>
+            <dt>Application application</dt>
+            <dd></dd>
+          </dl>
+        </section>
+
+        <p><a>ApplicationEvent</a> objects MUST contain a non-null <code>application</code>
+        attribute representing the application on each the action happened.<br>
+        The application events are always sent asynchronously, do not buble and
+        are not cancelable.</p>
+
+        <p>
+          There are currently two types of Application Events:
+          <ul>
+            <li><dfn>install</dfn> is sent when an application is installed.
+            <code>application</code> MUST represent the installed application.</li>
+            <li><dfn>uninstall</dfn> is sent when an application is uninstalled.
+            <code>application</code> MUST represent the uninstalled application.</li>
+          </ul>
+        </p>
+      </section>
+
+    </section>
+
+    <section>
+      <h2>Packaged applications</h2>
+
+      <p>A <dfn>packaged application</dfn> is an application that is
+      self-contained in a container. All resources that are commonly used by the
+      application SHOULD be available in the container.</p>
+
+      <p>A <dfn>hosted application</dfn> is an application that is not a
+      <a>packaged application</a></p>
+
+      <section class="informative">
+
+        <h2>Use cases</h2>
+
+        <p>A <a>packaged application</a> would be useful in a few situations,
+        amongst them:
+        <ul>
+          <li>If a marketplace wants to guarantee that an application is safe,
+          it allows it to review the application codes and makes sure that all
+          permissions granted can't be used outside of the reviewed code. In
+          addition, it forces, by design, that any update will go trough the
+          same review process.</li>
+          <li>Some developers might want to develop for the Web Platform without
+          investing in a server infrastructure. Any client-side only
+          applications written on top of the Web Platform will be able to be
+          very easily distributed that way.</li>
+        </ul></p>
+
+      </section>
+
+      <section>
+        <h2>Package format</h2>
+
+        <p>An <a>application manifest</a> for the application MUST be present at
+        the root of the container.</p>
+
+        <p>The container of a <a>packaged application</a> MUST be a ZIP file.</p>
+
+      </section>
+
+      <section>
+        <h2>URI of a packaged file</h2>
+
+        <p>A file contained in a <a>packaged application</a> MUST have an URI
+        with the following rules:
+        <ul>
+          <li>The <code>scheme</code> of the URI MUST be <i>app</i>.</li>
+          <li>The <code>authority</code> of the URI MUST be an identifier unique
+          for each applications. That means, two files from different
+          applications can't share the same <code>authority</code> but two files
+          from the same application will.</li>
+          <li>The <code>path</code> of the URI MUST be the file name.</li>
+          <li>Any other parts of the URI MUST be empty.</li>
+        </ul>
+        </p>
+
+        <p>For more information about URI's, refer to [[!RFC3986]].</p>
+
+        <p>
+        For example, the URI of <i>index.html</i> from an application can be:
+        <i>app://e35b8412-7451-46e7-ab29-0cee24fd486a/index.html</i>.
+        </p>
+
+        <p>The URI of a packaged file is defined such as two files from the same
+        <a>packaged application</a> MUST share the same origin.<br>
+        A file from a <a>packaged application</a> and any other resource outside
+        of this application (an application or not, packaged or not) MUST not
+        share the same origin. [[!ORIGIN]]</p>
+      </section>
+
+      <section>
+        <h2>Manifest</h2>
+
+        <p>A <a>packaged application</a> MUST have a copy of its <a>application
+        manifest</a> outside of the package so it can be used for installation
+        and updates purposes. As a consequence, that copy of the <a>application
+        manifest</a> can be reduced to only a few properties: <a>name</a>,
+        <a>version</a> and <a>relNotes</a>. In addition, a new property can be
+        used only in the content a packaged <a>application manifest<a>: <dfn
+        id='prop-package'>package</dfn> that SHOULD contain an object with the
+        following properties:
+        <ul>
+          <li><dfn id='prop-package-url'>url</dfn>: this property MUST contain
+          the URL of the package related to that <a>application manifest</a>.
+          <br>
+          When installing or updating a <a>packaged application</a> from an
+          <a>application manifest</a>, the UA MUST always use the manifest
+          inside the package as soon as the package is found.</li>
+          <li><dfn id='prop-package-size'>size</dfn>: the property SHOULD
+          contain the size of the package in kylo bytes.</li>
+          <li><dfn id='prop-package-sha256'>sha256</dfn>: this property SHOULD
+          contain the SHA256 checksum of the package and SHOULD be used by the
+          UA to verify the integrity of the downloaded package.</li>
+        </ul></p>
+
+        <pre class='example highlight'>
+        {
+          "name": "My Packaged App",
+          "description": "This is my first packaged app!",
+          "launch_path": "/",
+          "version": "1.0",
+          "developer": {
+            "name": "Mozilla",
+            "url": "https://mozilla.org/en-US"
+          },
+          "package": {
+            "url": "http://example.org/mypackagedapp.zip",
+            "size": "1024",
+            "sha256": "6df134b0cfd88d6d4f27a99e29b9923d50eb8b2c0d5289c60012de424c7a9d97"
+          }
+        }
+        </pre>
+      </section>
+
+      <todo>
+        * Add relNotes to the properties of the manifest, like:
+        'relNotes': {
+          '1.0': "This is what has been done...",
+          '0.1': "That was so long ago..."
+        }
+      </todo>
+
+    </section>
+
+    <section>
+      <h2>Updates</h2>
+
+      <p>An application SHOULD advertise an update by updating its
+      <a>application manifest</a>.</p>
+
+      <p>The UA SHOULD regularly check if the <a>application manifest</a> of
+      installed applications has not been updated. To know if the file has been
+      updated, HTTP semantics apply.</p>
+
+      <p>For <a>package applications</a>, both <a>application manifest</a>s
+      (outside and inside the package) SHOULD be updated. However, the
+      <a>application manifest</a> inside the package SHOULD always be checked to
+      make sure the update (or the install) is genuine.</p>
+    </section>
+
+    <section>
+      <h2>Data isolation</h2>
+
+      <p>In the context of a running application, all usual rules for data
+      isolation MUST apply: same-origin policy, same-domain policy, or whatever
+      is used. However, between two applications, those rules no longer apply.
+      Two applications MUST be fully isolated from each other in the sense that
+      they SHOULD NOT be able to access data from each other. For example, if
+      App1 accesses <i>http://example.org</i> and gets a cookie from it, App2
+      should not be able to see that cookie when accessing
+      <i>http://example.org</i> even if the usual cookie sharing policy should
+      allow this to happen.</p>
+
+      <p>This isolation SHOULD apply for all data storage like <i>cookies</i>,
+      <i>localStorage</i>, <i>IndexedDB</i>, <i>app cache</i> and any other Web
+      Platform mechanism that allows to store data and doesn't explicitly opts
+      out from the application data isolation.<br>
+      The isolation SHOULD also apply to UA specifics data storage. For example,
+      any permission granted or denied to a host/origin/domain should be
+      isolated per-application or auto-fill and autocompletion features for
+      forms.</p>
+    </section>
+
+    <section>
+      <h2>Navigation</h2>
+
+      <p>Depending on the user interface around the application context,
+      navigating outside the <a>application's origin</a> might lock the user out
+      of the application. To prevent that, the UA SHOULD NOT allow navigation
+      out of the <a>application's origin</a>, unless the origin is specified in
+      the following <a>application manifest</a> property:
+      <ul>
+        <li><dfn id='prop-allow-navigation'>allow-navigation</dfn>: the property
+        SHOULD contain an array of origins that can be navigated to from the
+        application.</li>
+      </ul></p>
+
+      <p>If the application tries to navigate to an unauthorized origin, the UA
+      SHOULD open the link in a regular but distinct browsing context.</p>
+    </section>
+
+    <section>
+      <h2>System Messages</h2>
+
+      <todo>
+        TODO: We might want to have something describing how an application goes
+        inactive, get killed and everything to have a better description of
+        system messages.
+
+        TODO: there is no notion of multi-page applications in this descirption
+        of system messages. We do not handle system messages that are registered
+        on another page.
+      </todo>
+
+      <p><i>System Messages</i> are events sent by the system to an application
+      which has registered for it before. Those events are different from DOM
+      events in the sense that they are always originated by the system and that
+      if the targeted application isn't currently running, it will be started.
+      <br>
+      In addition, un-handled messages will stay in a queue.</p>
+
+      <section class="informative">
+        <h2>Use cases</h2>
+
+        <p>Some applications might be interested in getting some events even if
+        they are not running and want to be woken up if such events is sent
+        while they are asleep.<br>
+        In addition, when the application is being woken, it needs to know as
+        soon as possible why it has been disturbed to be able to show the
+        appropriate interface.<br>
+        Finally, the capability of being woken should be transparent to the
+        application.</p>
+      </section>
+
+      <section>
+        <h2>Extension to the <a>Navigator</a> interface</h2>
+
+        <section>
+        <dl id='idl-def-systemMessageCallback' class='idl' title='callback systemMessageCallback = void'>
+          <dt>optional Object message</dt>
+          <dd>The parameter <i>message</i> SHOULD contain an object that would
+          be used by the handler and giving information about the system
+          message. For example, a system message about a delivered pizza should
+          give information about the pizzas that have been delivered. If the
+          system message is already self-explanatory, <i>message</i> SHOULD be
+          null.</dd>
+        </dl>
+
+        <dl title='partial interface Navigator' class='idl'>
+          <dt>void setMessageHandler(DOMString type, systemMessageCallback? callback)</dt>
+          <dd>The method MUST set <i>callback</i> as the new message handler
+          for the <a>type of system message</a> <i>type</i>.<br>
+          If <i>callback</i> is null, the current callback, if any, for the <a>
+          type of message</a> <i>type</i> must be reset and no callback should
+          no longer be set for this type.<br>
+          If <i>callback</i> is not null and there was no message handler for
+          the given type and there are messages in the <a>pool of messages</a>
+          for the type, then the UA MUST start an asynchronous task that
+          executes all the messages in the pool by the new handler in a
+          <abbr title='First In First Out'>FIFO</abbr> basis and then remove all
+          those messages from the <a>pool of messages</a>.<br>
+          If the <i>callback</i> is not null and there is a message handler for
+          the given type, that message handler should be replaced by
+          <i>callback</i>.</dd>
+
+          <dt>boolean hasPendingMessages(DOMString type)</dt>
+          <dd>The method MUST returns true if there is at least one message in
+          the <a>pool of messages</a> for the given <i>type</i>. Otherwise, it
+          MUST return false.</dd>
+        </dl>
+        </section>
+      </section>
+
+      <section>
+        <h2>Definitions</h2>
+
+        <p>The <dfn>type of system message</dfn> identifies a category of system
+        messages.<br>
+        Application are be able to register and handle system messages based
+        on their types. There is no exhaustive list of system messages type. Any
+        specification can create a new type of system message.</p>
+
+        <p>Each application has a <dfn>pool of messages</dfn> for each <a>type
+        of system message</a>. Everytime a system message is sent to an
+        application, if there is no handler for that message's type, the UA MUST
+        add the message to the pool of messages used for that type.<br>
+        The UA MAY, for memory optimization, discard old messages if the pool
+        becomes too big or if the messages are too old.
+
+        <p>When a UA is required to <dfn>fire a system message</dfn> of a given
+        type, it has to do one of these actions:
+        <ul>
+          <li>If the application is running and a handler is defined, the UA
+          MUST run the handling method;</li>
+          <li>Otherwise, if the application is running and no handler is defined,
+          the UA MUST add the message to the <a>pool of messages</a>;</li>
+          <li>Otherwise, if the application is not running, the UA MUST add the
+          message to the <a>pool of messages</a> and start the application.</li>
+        </ul>
+        </p>
+      </section>
+
+    </section>
+
+    <section>
+      <h2>Permissions</h2>
+
+      <section class="informative">
+        <h2>Use cases</h2>
+
+        <p>Some API might allow the application to access sensitive parts of the
+        hardware or sensitive information. To prevent applications to access
+        them, some APIs might require one or more permissions. For example, for
+        an application to be allowed to access your geolocation information, it
+        has to be granted the <i>geolocation</i> permission.</p>
+      </section>
+
+      <section>
+        <h2>Permission declaration</h2>
+
+        <p>An application SHOULD define all permissions it is going to use in
+        the <a>application manifest</a>. The UA MAY automatically grant some
+        permissions at install-time or ask the user to grant some applications.
+        However, MAY, in addition or alternatively, ask the user to grant
+        permissions at run-time.</p>
+
+        <p>The user MUST be able to revoke a granted permission or grant a
+        denied permission at any time.</p>
+      </section>
+
+      <section>
+        <h2>Basic Permissions</h2>
+
+        <p>Specifications are expected to declare the permissions they will
+        require for their feature to work. Altough, some basic permissions can't
+        really go into a specific specification or a related to specifications
+        that might be harder to change.</p>
+
+        <p>Thus, this specification is defining the following permissions:</p>
+
+        <table>
+          <tr>
+            <th>Permission Name</th>
+            <th>Permission Description</th>
+            <th>Access Type</th>
+          </tr>
+          <tr>
+            <td><code>desktop-notification</code></td>
+            <td>Allow the application to use the Desktop Notification API.</td>
+            <td>N/A</td>
+          </tr>
+          <tr>
+            <td><code>geolocation</code></td>
+            <td>Allow the application to access the Geolocation API.</td>
+            <td>N/A</td>
+          </tr>
+          <tr>
+            <td><code>storage</code></td>
+            <td>Allow localStorage and IndexedDB without size limitations.</td>
+            <td>N/A</td>
+          </tr>
+          <tr>
+            <td><code>webapps-manage</code></td>
+            <td>Allow access to the <code>navigator.apps.management</code> API
+            to manage installed webapps.</td>
+            <td>N/A</td>
+          </tr>
+        </table>
+      </section>
+
+      <section>
+        <h2>Trusted applications</h2>
+
+        <section class="informative">
+          <h2>Use cases</h2>
+
+          <p>Any application can be compromised. It just depends on how much
+          effort the attacker wants to provide and how much efforts the author
+          wants to dedicate making its application more secure. With an
+          interesting enough outcome, attackers could easily double their
+          efforts to beat the security in place. For example, an API allowing to
+          send SMS, if it can be manipulated by the evil persons, could be used
+          to send premium SMS and steal money from the users.</p>
+
+          <p>With a simple permission system, users could be tricked to install
+          the application and accept to grant the application the relevant
+          permissions. These kind of attacks are proven to be efficient.</p>
+        </section>
+
+        <section>
+          <h2>Chain of trust</h2>
+
+          <p>An application is said to be a <dfn>trusted application</dfn> if
+          the origin installing the application is trusted by the UA and the
+          origin installing the application consider the application as
+          trusty.</p>
+
+          <p>A UA SHOULD have the public key of all installation origin it is
+          considering trusted.</p>
+        </section>
+
+        <section>
+          <h2>Marking an application trusted</h2>
+
+          <p>A <a>hosted application</a> MUST be recognized as marked trusted by
+          the installation origin if the <a>application manifest</a> is signed
+          by the installation origin's private key.</p>
+
+          <p>A <a>packaged application</a> MUST be recognized as marked trusted
+          by the installation origin if the package is signed by the
+          installation origin's private key.</a>
+
+          <p>In both cases, the application SHOULD be considered as trusted by
+          the UA if the UA considers the installation origin as trusted,
+          following the chain of trust mentioned above.</p>
+        </section>
+
+        <section class="informative">
+          <h2>Security considerations</h2>
+
+          <p>UA should keep in mind that a signed package is way more secure
+          than a signed manifest. A correctly signed package can only be
+          compromised if the private key has been compromised or the
+          cryptographic algorithm. A UA should not trust an installation origin
+          if it does not trust its ability to keep safe its private key.</p>
+
+          <p>On the other hands, a signed manifest only proves that the
+          application is genuinly trusted (if the private key was not
+          compromised nor the cryptographic algorithm). Anything else can be
+          compromised given that it lives in the Internet. There is no need to
+          list all possible attacks.</p>
+
+          <p>An important difference between a <a>packaged application</a> and a
+          <a>hosted application</a> is the ability to review the code. Any
+          permission granted to a <a>packaged application</a> will be granted to
+          the code inside the package only. That means trusting such application
+          is way easier after a code review, for example.</p>
+
+          <p>However, code review for <a>packaged application</a>s could be
+          avoided if the installation origin trusts enough an application
+          developer. Such developer could get all its <a>packaged
+          application</a>s trusted without too much risk for the users.<br>
+          The same thing colud be done for <a>hosted application</a> except that
+          it would be recommended to make sure that the developer has strong
+          server security or would not risk any security flaw on their servers.
+          </p>
+        </section>
+
+        <section>
+          <h2>CSP Policy</h2>
+
+          <section class="note">
+            The following sub-section assumes that a <a>trusted application</a>
+            can only be a <a>packaged application</a>. This needs to be updated.
+          </section>
+
+          <p>The following CSP policy MUST apply to all <a>trusted
+          application</a>s [[!CSP]]:<br></p>
+
+          <p><code>default-src *; script-src 'self'; object-src 'none';
+          style-src 'self'</code></p>
+
+          <p>This puts the following restrictions on web pages part of a
+          <a>trusted application</a>:
+          <ul>
+            <li>Scripts can only be loaded from the package;</li>
+            <li>Scripts can not use data:-URIs;</li>
+            <li>Inline scripts can not be used;</li>
+            <li>eval() can not be used. Neither can eval-like functions like
+            setTimeout or "new Function". setTimeout can still be used as long
+            as the first argument is a Function object rather than a string;<il>
+            <li>onXXX attributes can't be used in the markup of pages. However,
+            using the associated <a>EventHandler</a> is doable. For example:
+            myElement.onXXX = someFunction;<li>
+            <li>&lt;object&gt;, &lt;embed&gt; and &lt;applet&gt; are fully
+            disabled. In other words, plugins won't work at all. Including
+            flash.</li>
+            <li>CSS can only be loaded from the package. Inline CSS is
+            however allowed.</li>
+          </ul></p>
+
+          <p>This does not restrict any of the following:
+          <ul>
+            <li>&lt;iframe&gt;s can still point to any URL;</li>
+            <li>Images can still be loaded from anywhere. Including when loaded
+            using an &lt;img&gt; element, when using CSS background images or
+            when using other types of CSS images;</li>
+            <li>Media (audio and video) can still be loaded from anywhere;</li>
+            <li>Network connections can still be opened anywhere using
+            data-centric APIs like XMLHttpRequest or WebSocket.</li>
+          </ul></p>
+
+          <p>There is no way for <a>trusted application</a>s to relax this
+          policy.</p>
+        </section>
+      </section>
+    </section>
+
+    <section>
+      <h2>Application life-cycle</h2>
+
+      <section>
+        <h2>Application states</h2>
+
+        <p>At any time, an application MUST be in one of the following states:
+        <a>running</a>, <a>paused</a>, <a>terminated</a>.</p>
+
+        <p>An application is <dfn>running</dfn> when it has been launched by the
+        UA and has not been put in <a>paused</a>. A <a>running</a> application
+        can transition to <a>paused</a> or <a>terminated</a> states.</p>
+
+        <p>If a <a>running</a> application transitions to a
+        <a>paused</a> state, the UA MUST <a>fire a simple event</a> named
+        <code>pause</code> on the <a>Application</a> object before switching its
+        state.</p>
+
+        <p>If a <a>running</a> application transitions to a <a>terminated</a>
+        state, the UA MUST <a>fire a simple event</a> named <code>terminate</code>
+        on the <a>Application</a> object before shutting down the application.
+        </p>
+
+        <p>An application is <dfn>paused</dfn> when the UA stops the execution
+        of an application without terminating it. A <a>paused</a> application
+        SHOULD have all its scripts no longer running, such as rendering,
+        parsing, processing media files and any action that requires CPU and
+        memory or would distract the user. A <a>paused</a> application can
+        transition to <a>running</a> or <a>terminated</a> states.
+
+        <p>If a <a>paused</a> application transitions to a <a>running</a> state,
+        the UA MUST <a>fire a simple event</a> named <code>resume</code> on the
+        <a>Application</a> object after changing its state.</p>
+
+        <p>An application is <dfn>terminated</dfn> when the application has been
+        stopped and is no longer loaded in the system. The state of a
+        <a>terminated</a> application can only be changed to
+        <a>running</a> if the application is launched again.</p>
+
+        <p>If a <a>terminated</a> application transitions to a <a>running<a>
+        state, the UA MUST <a>fire a simple event</a> named <code>launch</code>
+        on the <a>Application</a> object after the main browsing context is
+        created but before the <code>load</code> and <code>DOMContentLoaded</code>
+        events are fired.</p>
+      </section>
+
+      <section class='issue'>
+          <p>The specification currently assumes that one will save important
+          when paused so there is no terminate event when transitionning from
+          pause to terminate.</p>
+      </section>
+
+      <section class='issue'>
+      <p>Do we have real use cases for <code>launch</code>?<br>
+         Is firing before <code>load</code> a hard thing to do?</p>
+      </section>
+
+      <section>
+        <h2>Consequences of visibility</h2>
+
+        <p>While an application is running, it can be part or fully hidden. The
+        visibility events described in [[!PAGE-VISIBILITY]] MUST be sent when
+        the visibility status of the application changes.</p>
+
+        <p>In addition, when the application becomes fully hidden, the UA MAY
+        put the application in a <a>paused</a> state.</p>
+      </section>
+
+    </section>
+
+    <section class="appendix">
+      <h2><a>DOMRequest</a> interface</h2>
+
+      <section class="note">
+        <p>The <a>DOMRequest</a> interface is temporarily hosted by this
+          specification. The <i>Runtime and Security Model for Web Applications
+          </i> specificaton doesn't plan to keep that guest for ever, this is
+          why it is currently staying in an appendix.</p>
+      </section>
+
+      <section class="informative">
+        <h2>Use cases</h2>
+
+        <p>Some methods want to return a value or do an action but can't do it
+        synchronously, most of the time for performance reasons. In that case,
+        most of those methods will use a callback mechanism to inform the caller
+        of the success or the failure of the action.<br>
+        However, this callback mechanism makes the code barely readable and
+        there is no common pattern used by all API in the Web Platform.<br>
+        <a>DOMRequest</a> intend to be used instead of those callbacks to make
+        those APIs more developer-friendly and help code readability.</p>
+      </section>
+
+      <section>
+        <h2>Definition</h2>
+
+        <p>The <a>DOMRequest</a> interface is intented to be used by
+        asynchronous methods that want to return something after performing an
+        action or simply want to inform the caller that the action is done.<br>
+        It returned request can also be used to inform that an error happened
+        during the operation.</p>
+
+        <p><a>A <a>DOMRequest</a> has three state. It is whether
+        <code>pending</code>, <code>success</code> or <code>error</code>.<br>
+        The initial state of a <a>DOMRequest</a> MUST be <code>pending</code>.
+        <br>
+        If a <a>DOMRequest</a> receives a <a>success message</a> while in the
+        <code>pending</code> state, its state MUST change to
+        <code>success</code> and SHOULD NOT change afterward.<br>
+        If a <a>DOMRequest</a> receives an <a>error message</a> while in the
+        <code>pending</code> state, its state MUST change to <code>error</code>
+        and SHOULD NOT change afterward.<br>
+        If a <a>DOMRequest</a> receives a <a>success message</a> or an
+        <a>error message</a> while not in the <code>pending</code> state, the
+        message MUST be ignored.</p>
+
+        <p>A <dfn>success message</dfn> SHOULD be sent to the <a>DOMRequest</a>
+        when the operation is successfuly terminated. The message MAY contain a
+        value which MUST be used by the <code>result</code> attribute. If the
+        message does not contain a value, <i>null</i> MUST be used instead.</p>
+
+        <p>As soon as a <a>success message</a> is received,
+        <code>readyState</code> MUST return <code>done</code>,
+        <code>result</code> MUST return the received value or <i>null</i> as
+        explained above and the object MUST NOT change its state and MUST,
+        therefore, ignore all following <a>success message</a> and
+        <a>error message</a>.<br>
+        Finally, the UA MUST <a>fire a simple event</a> named
+        <code>success</code> on the object</p>
+
+        <p>An <dfn>error message</dfn> SHOULD be sent to the <a>DOMRequest</a>
+        when the operation has failed. The message MAY contain a value which
+        MUST be a <a>DOMError</a> object and MUST be used by the
+        <code>error</code> attribute. If the message does not contain a value,
+        the UA SHOULD find the most appropriate <a>DOMError</a> that represents
+        the failure.</p>
+
+        <p>As soon as an <a>error message</a> is received,
+        <code>readyState</code> MUST return <code>done</code>,
+        <code>error</code> MUST return the received value the most appropriate
+        error value as explained above and the object MUST NOT change its state
+        and MUST, therefore, ignore all following <a>success message</a> and
+        <a>error message</a>.<br>
+        Finally, the UA MUST <a>fire a simple event</a> named <code>error</code>
+        on the object.</p>
+
+        <section>
+        <dl title='interface DOMRequest : EventTarget' class='idl'>
+          <dt>readonly attribute DOMString readyState</dt>
+          <dd>The attribute MUST return <code>pending</code> if the current
+          state is <code>pending</code>. Otherwise, it MUST return
+          <code>done</code>.</dd>
+
+          <dt>readonly attribute any result</dt>
+          <dd>The attribute MUST return <code>undefined</code> if the current
+          state is not <code>success</code>. Otherwise, it MUST return the value
+          provided by the <a>success message</a> or <code>null</code> if no
+          value was sent with the message.</dd>
+
+          <dt>readonly attribute DOMError? error</dt>
+          <dd>The attribute MUST return <i>null</i> if the current state is not
+          <code>error</code>. Otherwise, it MUST return the value provided by
+          by the <a>error message</a>. If there was no provided value, it SHOULD
+          return the most appropriate <a>DOMError</a> that represents the
+          failure.</dd>
+
+          <dt>[TreatNonCallableAsNull] attribute EventHandler onsuccess</dt>
+          <dd></dd>
+
+          <dt>[TreatNonCallableAsNull] attribute EventHandler onerror</dt>
+          <dd></dd>
+        </dl>
+        </section>
+
+        <section>
+          <h2>Events</h2>
+
+          <p>
+            The following are the <a>event handlers</a> (and their corresponding
+            <a>event handler event types</a>) that MUST be supported as
+            attributes by the <code>DOMRequest</code> objects:
+          </p>
+
+          <table class="simple">
+            <thead>
+              <tr>
+                <th>event handler</th>
+                <th>event handler event type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong><code>onerror</code></strong></td>
+                <td><code>error</code></td>
+              </tr>
+              <tr>
+                <td><strong><code>onsuccess</code></strong></td>
+                <td><code>success</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+      </section>
+    </section>
+
+    <section class="appendix">
+      <h2>Acknowledgments</h2>
+
+      <p>Thanks to the Samsung team, especially 金明(Ming Jin), Janusz Majnert
+      and 송정기(Jungkee Song) for their work on the <i>System Application
+      Runtime: Execution and Security Model</i> specification.</p>
+
+      <p>Special thanks to Anant Narayanan for his <i>Web Application Manifest
+      Format and Management APIs</i> that this specification reuse shamlesly and
+      to Jonas Sicking for being awesome, as always.</p>
+    </section>
+  </body>
+</html>
