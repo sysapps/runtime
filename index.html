@@ -47,21 +47,42 @@
   <body>
   
   <section id='abstract'>
-      <p>
-        This document specifies two classes of Web application: <em>hosted Web applications</em> and <em>packaged applications</em>. These applications differ from traditional  Web applications in their life cycle, security model, and access to APIs that are not normally available to Web applications. Conceptually, the application manifest indicates that an application can be &quot;installed&quot; on an end-user's device. What distinguishes a traditional Web application from a hosted web application is  an application manifest: this is a JSON resource that contains application specific metadata (e.g., the name of the application), and optionally various security related permission requests to resources on the Web and/or services and capabilities on the device.
-    </p>
-      <figure>
-        <img src="images/apptypes.png" alt="">
-        <figcaption>
-          The figure shows the overlap between traditional web applications, hosted web applications, and packaged applications. Web applications make use of standard Web technologies but don't make use of of an application manifest. On the other hand, hosted applications make use of an application manifest, while packaged applications have both an application manifest and are packaged using [[!ZIP]].
-        </figcaption>
-      </figure>
-      <p>
-        Installation of hosted or packaged applications onto a device can be initiated through  either linking to an application manifest or through the use of the <code> ApplicationRegistry</code> API. This API gives a developer a degree of control over the installation process, as well as providing a means to programmatically unistall an application.
-      </p>
-      <p>
-        This specification also specifies aspects related to the application's lifecycle that are outside the control of the developer. These events sometimes result in <em>system messages</em> being generated. Developers can register event listeners to listen for these special events during the life cycle of their application.
-      </p>
+    <p>This document specifies two classes of Web application: <em>hosted Web
+    applications</em> and <em>packaged applications</em>. These applications
+    differ from traditional Web applications in their life cycle, security
+    model, and access to APIs that are not normally available to Web
+    applications. Conceptually, the application manifest indicates that an
+    application can be "installed" on an end-user's device. What distinguishes
+    a traditional Web application from a hosted web application is an
+    application manifest: this is a JSON resource that contains application
+    specific metadata (e.g., the name of the application), and optionally
+    various security related permission requests to resources on the Web and/or
+    services and capabilities on the device.</p>
+
+    <figure>
+      <img src="images/apptypes.png" alt="">
+
+      <figcaption>
+        The figure shows the overlap between traditional web applications,
+        hosted web applications, and packaged applications. Web applications
+        make use of standard Web technologies but don't make use of of an
+        application manifest. On the other hand, hosted applications make use
+        of an application manifest, while packaged applications have both an
+        application manifest and are packaged using [[!ZIP]].
+      </figcaption>
+    </figure>
+
+    <p>Installation of hosted or packaged applications onto a device can be
+    initiated through either linking to an application manifest or through the
+    use of the <code>ApplicationRegistry</code> API. This API gives a developer
+    a degree of control over the installation process, as well as providing a
+    means to programmatically unistall an application.</p>
+
+    <p>This specification also specifies aspects related to the application's
+    lifecycle that are outside the control of the developer. These events
+    sometimes result in <em>system messages</em> being generated. Developers
+    can register event listeners to listen for these special events during the
+    life cycle of their application.</p>
   </section>
 
     <section>
