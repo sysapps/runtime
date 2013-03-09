@@ -104,52 +104,47 @@
       installable web application. This JSON file consists of a top-level object
       and several properties. The JSON grammar is described in [[!RFC4627]].</p>
 
-      <pre class="example highlight">
-      {
-        "name": "MozillaBall",
-        "description": "Exciting Open Web development action!",
-        "launch_path": "/",
-        "version": "1.0",
-        "icons": {
-          "16": "/img/icon_16.png",
-          "48": "/img/icon_48.png",
-          "128": "/img/icon_128.png"
-        },
-        "developer": {
-          "name": "Mozilla",
-          "url": "https://mozilla.org/en-US"
-        },
-        "appcache_path": "/cache.manifest",
-        "locales": [
-          "es": {
-            "description": "¡Acción abierta emocionante del desarrollo del Web!",
-            "developer": {
-              "url": "https://mozilla.org/es-ES"
-            }
-          }
-        ],
-        "default_locale": "en",
-        "screen_size": {
-          "min_width": "600",
-          "min_height": "300"
-        },
-        "required_features": [
-          "touch", "geolocation", "webgl"
-        ],
-        "permissions": {
-          "contacts": {
-            "description": "Required for autocompletion in the share screen",
-            "access": "read"
-          }
-        },
-        "fullscreen": "true",
-        "relNotes": {
-          "1.0": "Bugs fixed. New exciting effects. Ready for an official release!"
-          "0.5": "First alpha version with still some bugs but already fun!"
-        }
+      <pre class="example highlight">{
+  "name": "The Example App",
+  "description": "Exciting Open Web development action!",
+  "launch_path": "/",
+  "version": "1.0",
+  "icons": {
+    "16": "/img/icon_16.png",
+    "48": "/img/icon_48.png",
+    "128": "/img/icon_128.png"
+  },
+  "developer": {
+    "name": "Foo Corp.",
+    "url": "http://sysapps.org/example"
+  },
+  "appcache_path": "/cache.manifest",
+  "locales": {
+    "es": {
+      "description": "¡Acción abierta emocionante del desarrollo del Web!",
+      "developer": {
+        "url": "https://sysapps.org/example/es-ES"
       }
-      }
-      </pre>
+    }
+  },
+  "default_locale": "en",
+  "screen_size": {
+    "min_width": "600",
+    "min_height": "300"
+  },
+  "required_features": ["touch", "geolocation", "webgl"],
+  "permissions": {
+    "contacts": {
+      "description": "Required for auto-completion in the share screen",
+      "access": "read"
+    }
+  },
+  "fullscreen": "true",
+  "relNotes": {
+    "1.0": "Bugs fixed. New exciting effects. Ready for an official release!",
+    "0.5": "First alpha version with still some bugs but already fun!"
+  }
+}</pre>
 
       <section>
         <h2>Properties</h2>
