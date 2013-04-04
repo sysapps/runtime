@@ -762,8 +762,8 @@
                 the caller's origin. [[!ORIGIN]]<br>
                 When those applications are collected, the UA SHOULD send a
                 <code>success</code> event to the <a>DOMRequest</a> object and
-                populate its <code>request</code> attribute with an array
-                containing the applications.</dd>
+                populate its <code>request</code> attribute with an array of
+                <a>Application</a> objects representing the applications.</dd>
 
             <dt>DOMRequest getInstalled()</dt>
             <dd>The UA SHOULD return a <a>DOMRequest</a> object and
@@ -771,8 +771,8 @@
                 the caller's origin. [[!ORIGIN]]<br>
                 When those applications are collected, the UA SHOULD send a
                 <code>success</code> event to the <a>DOMRequest</a> object and
-                populate its <code>request</code> attribute with an array
-                containing the applications.</dd>
+                populate its <code>request</code> attribute with an array of
+                <a>Application</a> objects representing the applications.</dd>
 
             <dt>DOMRequest checkInstalled(DOMString manifestURL)</dt>
             <dd>The UA SHOULD return a <a>DOMRequest</a> object and
@@ -842,7 +842,8 @@
           application registry.<br>
           When those applications are collected, the UA SHOULD send a
           <code>success</code> event to the <a>DOMRequest</a> object and
-          populate its <code>request</code> attribute with an array containing
+          populate its <code>request</code> attribute with an array of
+          <a>Application</a> objects representing the applications.</p>
           the applications.</p>
 
           <p>The <code>applyUpdate</code> method MUST return a <a>DOMRequest</a>
