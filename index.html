@@ -820,44 +820,49 @@
              restricted to privileged callers.</p>
 
           <dl title='interface ApplicationManagement' class='idl'>
-            <dt>DOMRequest getAll()</dt>
-            <dd>The UA SHOULD return a <a>DOMRequest</a> object and
-                asynchronously get all applications currently in the application
-                registry.<br>
-                When those applications are collected, the UA SHOULD send a
-                <code>success</code> event to the <a>DOMRequest</a> object and
-                populate its <code>request</code> attribute with an array
-                containing the applications.</dd>
+            <dt class='no-docs'>
+              DOMRequest getAll()
+            </dt>
+            <dd></dd>
 
-            <!-- Update-related API -->
-
-            <dt>DOMRequest applyUpdate(Application application)</dt>
-            <dd>The method MUST return a <a>DOMRequset</a> object and perform
-            the following steps asynchronously:
-            <ol>
-              <li>If the application doesn't have an updated or the updated
-              isn't fully downloaded, the UA MUST send an <a>error message</a>
-              to the request with the value <code>InvalidState</code> and abort
-              these steps.</li>
-              <li>Stop <i>application</i> from running if it is currently
-              running.</li>
-              <li>Replace the previous version with the new version of the
-              application.</li>
-              <li>If an error has occured during the previous steps, the UA MUST
-              send an <a>error message</a> to the request with any appropriate
-              value. Otherwise, the UA MUST send a <a>success message</a> to the
-              request with an <a>Application</a> object representing the updated
-              application as a value.</li>
-            </ol>
-            </dd>
+            <dt class='no-docs'>
+              DOMRequest applyUpdate(Application application)
+            </dt>
+            <dd></dd>
 
             <dt class='no-docs'>attribute EventHandler oninstall</dt>
             <dd></dd>
 
             <dt class='no-docs'>attribute EventHandler onuninstall</dt>
             <dd></dd>
-
           </dl>
+
+          <p>The <code>getAll</code> method SHOULD return a <a>DOMRequest</a>
+          object and asynchronously get all applications currently in the
+          application registry.<br>
+          When those applications are collected, the UA SHOULD send a
+          <code>success</code> event to the <a>DOMRequest</a> object and
+          populate its <code>request</code> attribute with an array containing
+          the applications.</p>
+
+          <p>The <code>applyUpdate</code> method MUST return a <a>DOMRequest</a>
+          object and perform the following steps asynchronously:
+          <ol>
+            <li>If the application doesn't have an updated or the updated
+            isn't fully downloaded, the UA MUST send an <a>error message</a>
+            to the request with the value <code>InvalidState</code> and abort
+            these steps.</li>
+            <li>Stop <i>application</i> from running if it is currently
+            running.</li>
+            <li>Replace the previous version with the new version of the
+            application.</li>
+            <li>If an error has occured during the previous steps, the UA MUST
+            send an <a>error message</a> to the request with any appropriate
+            value. Otherwise, the UA MUST send a <a>success message</a> to the
+            request with an <a>Application</a> object representing the updated
+            application as a value.</li>
+          </ol>
+          </p>
         </section>
 
         <section>
