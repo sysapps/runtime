@@ -829,18 +829,6 @@
                 populate its <code>request</code> attribute with an array
                 containing the applications.</dd>
 
-            <dt>[TreatNonCallableAsNull] attribute EventHandler oninstall</dt>
-            <dd>This value may be set to a function that will be invoked when an
-            application is installed. The only argument to this function will be
-            the <code>Application</code> object of the application that was
-            installed.</dd>
-
-            <dt>[TreatNonCallableAsNull] attribute EventHandler onuninstall</dt>
-            <dd>This value may be set to a function that will be invoked when an
-            application is uninstalled. The only argument to this function be the
-            <code>Application</code> object of the application that was
-            uninstalled.</dd>
-
             <!-- Update-related API -->
 
             <dt>DOMRequest applyUpdate(Application application)</dt>
@@ -863,21 +851,31 @@
             </ol>
             </dd>
 
+            <dt class='no-docs'>attribute EventHandler oninstall</dt>
+            <dd></dd>
+
+            <dt class='no-docs'>attribute EventHandler onuninstall</dt>
+            <dd></dd>
+
           </dl>
         </section>
 
         <section>
           <h2>Events</h2>
           <p>
-            An <a>install</a> event MUST be fired on all
-            <a>ApplicationManagement</a> instances as soon as an application is
-            installed.
+            An <a>install</a> event using the <a>ApplicationEvent</a> interface
+            MUST be fired on all <a>ApplicationManagement</a> instances as soon
+            as an application is installed with the <code>application</code>
+            attribute set to the <a>Application</a> object representing the
+            installed application.
           </p>
 
           <p>
-            The <a>uninstall</a> event MUST be fired on all
-            <a>ApplicationManagement</a> instances as soon as an application is
-            uninstalled.
+            The <a>uninstall</a> event using the <a>ApplicationEvent</a>
+            interface MUST be fired on all <a>ApplicationManagement</a>
+            instances as soon as an application is uninstalled with the
+            <code>application</code> attribute set to the <a>Application</a>
+            object representing the uninstalled application.
           </p>
 
           <p>
