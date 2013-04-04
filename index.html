@@ -86,6 +86,17 @@
 
     <section>
       <h2>Terminology</h2>
+      <p>A <dfn>langauge tag</dfn> is a string that matches the production of a
+      <code>Language-Tag</code> defined in the <a>[[!BCP47]]</a> specifications
+      (see the <a href=
+      "http://www.iana.org/assignments/language-subtag-registry">IANA Language
+      Subtag Registry</a> for an authoritative list of possible values, see also
+      the <a href=
+      "http://www.iso.org/iso/country_codes/iso_3166_code_lists/country_names_and_code_elements">
+      Maintenance Agency for ISO 3166 country codes</a>). Language tags that meet
+      the validity criteria of [[!RFC5646]] section 2.2.9 that can be verified
+      without reference to the IANA Language Subtag Registry are considered
+      structurally valid.</p>
       <p>
         The <dfn><a href="http://dev.w3.org/html5/spec/webappapis.html#event-handlers">
         EventHandler</a></dfn> interface represents a callback used for event
@@ -229,7 +240,7 @@
             <dfn id="propdef-locales">locales</dfn>: The property's value MUST
             contain a map of locale specific overrides of strings contained in
             the <a>application manifest</a>. Each locale key is keyed on a
-            locale tag [[!RFC4646]], and contains a sparse representation of the
+            <a>language tag</a>, and contains a sparse representation of the
             manifest. Any field in the <a>locales</a> property SHOULD override
             the corresponding property in a localized user interface. The UA
             MAY ignore some values if localizing the property doesn't appear
