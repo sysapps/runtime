@@ -184,7 +184,7 @@
           manifest</a>. Those specifications MUST describe the new properties,
           the expected values and the expected behaviour. Implementations MUST
           implement the basic properties as describe below but SHOULD only
-          implement any extented feature if they are implementing those
+          implement any extended feature if they are implementing those
           specifications.</p>
         </section>
 
@@ -243,8 +243,8 @@
             <a>language tag</a>, and contains a sparse representation of the
             manifest. Any field in the <a>locales</a> property SHOULD override
             the corresponding property in a localized user interface. The UA
-            MAY ignore some values if localizing the property doesn't appear
-            to be legit.<br>
+            MAY ignore some values if localizing the property does not appear
+            to be legitimate.<br>
             If the <a>locales</a> property is set, the <a>default_locale</a>
             MUST also be set.
           </li>
@@ -269,7 +269,7 @@
 
           <li><dfn id="propdef-version">version</dfn>: The value MUST be a
           string that represents the version of the application. The UA SHOULD
-          NOT interpret this value but MAY show it to the user so the auther
+          NOT interpret this value but MAY show it to the user so the author
           SHOULD use human understandable versions.</dfn>
 
           <li><dfn id="propdef-screen_size">screen_size</dfn>: This object
@@ -489,14 +489,14 @@
             <dt><a>DOMRequest</a> launch()</dt>
             <dd>This method MUST return a <a>DOMRequest</a> instance and then run the following steps asynchronously:
                 <ol>
-                  <li>If the caller isn't allowed by the UA to launch the
+                  <li>If the caller is not allowed by the UA to launch the
                       application, the UA MUST fire an <code>error</code> event
                       to the <a>DOMRequest</a> object with the
                       <code>"NotAllowedError"</code> error code and exit those
                       steps.</li>
                   <li>If the caller is allowed to launch the application, the
                       UA SHOULD launch the application.</li>
-                  <li>If the application has been successfuly launched, the UA
+                  <li>If the application has been successfully launched, the UA
                       MUST fire a <code>success</code> event to the
                       <a>DOMRequest</a> object and set <code>result</code> to
                       null.<br>
@@ -509,18 +509,18 @@
             <dt><a>DOMRequest</a> uninstall()</dt>
             <dd>This method MUST return a <a>DOMRequest</a> instance and then run the following steps asynchronously:
                 <ol>
-                  <li>If the application isn't currently installed, the UA MUST
+                  <li>If the application is not currently installed, the UA MUST
                       fire an <code>error</code> event to the <a>DOMRequest</a>
                       object with the <code>"NotInstalledError"</code> error code
                       and exit those steps.</li>
-                  <li>If the caller isn't allowed by the UA to uninstall the
+                  <li>If the caller is not allowed by the UA to uninstall the
                       application, the UA MUST fire an <code>error</code> event
                       to the <a>DOMRequest</a> object with the
                       <code>"NotAllowedError"</code> error code and exit those
                       steps.</li>
                   <li>If the caller is allowed to uninstall the application,
                       the UA SHOULD uninstall the application.</li>
-                  <li>If the application has been successfuly uninstalled, the
+                  <li>If the application has been successfully uninstalled, the
                       UA MUST fire a <code>success</code> event to the
                       <a>DOMRequest</a> object and set <code>result</code> to
                       null.<br>
@@ -552,11 +552,11 @@
             <dt>readonly attribute unsigned long downloadSize</dt>
             <dd>The attribute SHOULD return the size of the download that would be
             required to update the application in kilobytes, if any. If the
-            application doesn't have have an available update, if the download
+            application does not have have an available update, if the download
             has already been done or if the UA can't find out the size of the
             download required for the update, the attribute MUST return 0.<br>
             If the download is happening, the attribute MUST return 0.<br>
-            If the download has been made but interupted and the UA is able to
+            If the download has been made but interrupted and the UA is able to
             continue it, the attribute SHOULD return the remaining size to
             download.</dd>
 
@@ -564,10 +564,10 @@
             <dd>The method MUST return a <a>DownloadRequest</a> object and
             asynchronously run the following steps:
             <ol>
-              <li>If the application doesn't have an available update, the UA
+              <li>If the application does not have an available update, the UA
               MUST send an <a>error message</a> to the request object with the
               value <code>InvalidState</code> and abort these steps.</li>
-              <li>If the application doesn't require a download to process the
+              <li>If the application does not require a download to process the
               update, the UA MUST send a <a>success message</a> to the request
               object with no value and abort these steps.</li>
               <li>If the application's update is currently being downloaded, the
@@ -678,7 +678,7 @@
           regularly <a>fire a simple event</a> named <a>progress</a> on the
           object. The UA should note that sending too much events might have an
           impact on performance but sending too few of them might impact the
-          user experince.</p>
+          user experience.</p>
 
           <p>The following are the <a>event handlers</a> (and their
           corresponding <a>event handler event types</a>) that MUST be supported
@@ -729,7 +729,7 @@
             parameters)</dt>
             <dd>This method MUST return a <a>DOMRequest</a> instance and then run the following steps asynchronously:
               <ol>
-                <li>If the caller isn't allowed by the UA to install the
+                <li>If the caller is not allowed by the UA to install the
                     application, the UA MUST fire an <code>error</code> event
                     to the <a>DOMRequest</a> object with the
                     <code>"NotAllowedError"</code> error code and exit those
@@ -737,7 +737,7 @@
                 <li>If the caller is allowed to install the application, the
                     UA SHOULD install the application as described in the
                     manifest at <code>manifestUrl</code>.</li>
-                <li>If the application has been successfuly installed, the UA
+                <li>If the application has been successfully installed, the UA
                     MUST fire a <code>success</code> event to the
                     <a>DOMRequest</a> object and set <code>result</code> to
                     null.<br>
@@ -785,7 +785,7 @@
             otherwise <code>result</code> should be set to false.</dd>
 
             <todo>
-              checkInstalled() could be synchronous. Seems way more convevient.
+              checkInstalled() could be synchronous. Seems way more convenient.
             </todo>
 
             <todo>
@@ -796,13 +796,13 @@
             </todo>
 
             <dt>attribute ApplicationManagement management</dt>
-            <dd>If the caller isn't allowed to manage applications, the UA MUST
+            <dd>If the caller is not allowed to manage applications, the UA MUST
                 return null. Otherwise, it MUST return an
                 <a>ApplicationManagement</a> object.</dd>
 
             <todo>
               <ul>
-                <li>Permission check isn't clearly defined here. Should it be better?</li>
+                <li>Permission check is not clearly defined here. Should it be better?</li>
               </ul>
             </todo>
 
@@ -849,15 +849,15 @@
           <p>The <code>applyUpdate</code> method MUST return a <a>DOMRequest</a>
           object and perform the following steps asynchronously:
           <ol>
-            <li>If the application doesn't have an updated or the updated
-            isn't fully downloaded, the UA MUST send an <a>error message</a>
+            <li>If the application does not have an update or the update
+            is not fully downloaded, the UA MUST send an <a>error message</a>
             to the request with the value <code>InvalidState</code> and abort
             these steps.</li>
             <li>Stop <i>application</i> from running if it is currently
             running.</li>
             <li>Replace the previous version with the new version of the
             application.</li>
-            <li>If an error has occured during the previous steps, the UA MUST
+            <li>If an error has occurred during the previous steps, the UA MUST
             send an <a>error message</a> to the request with any appropriate
             value. Otherwise, the UA MUST send a <a>success message</a> to the
             request with an <a>Application</a> object representing the updated
@@ -1037,7 +1037,7 @@
           <a>application manifest</a>, the UA MUST always use the manifest
           inside the package as soon as the package is found.</li>
           <li><dfn id='prop-package-size'>size</dfn>: the property SHOULD
-          contain the size of the package in kylo bytes.</li>
+          contain the size of the package in kilobytes.</li>
           <li><dfn id='prop-package-sha256'>sha256</dfn>: this property SHOULD
           contain the SHA256 checksum of the package and SHOULD be used by the
           UA to verify the integrity of the downloaded package.</li>
@@ -1103,11 +1103,11 @@
 
       <p>This isolation SHOULD apply for all data storage like <i>cookies</i>,
       <i>localStorage</i>, <i>IndexedDB</i>, <i>app cache</i> and any other Web
-      Platform mechanism that allows to store data and doesn't explicitly opts
+      Platform mechanism that allows to store data and does not explicitly opt
       out from the application data isolation.<br>
       The isolation SHOULD also apply to UA specifics data storage. For example,
       any permission granted or denied to a host/origin/domain should be
-      isolated per-application or auto-fill and autocompletion features for
+      isolated per-application or auto-fill and auto-completion features for
       forms.</p>
     </section>
 
@@ -1137,7 +1137,7 @@
         inactive, get killed and everything to have a better description of
         system messages.
 
-        TODO: there is no notion of multi-page applications in this descirption
+        TODO: there is no notion of multi-page applications in this description
         of system messages. We do not handle system messages that are registered
         on another page.
       </todo>
@@ -1145,7 +1145,7 @@
       <p><i>System Messages</i> are events sent by the system to an application
       which has registered for it before. Those events are different from DOM
       events in the sense that they are always originated by the system and that
-      if the targeted application isn't currently running, it will be started.
+      if the targeted application is not currently running, it will be started.
       <br>
       In addition, unhandled messages will stay in a queue.</p>
 
@@ -1211,7 +1211,7 @@
         specification can create a new type of system message.</p>
 
         <p>Each application has a <dfn>pool of messages</dfn> for each <a>type
-        of system message</a>. Everytime a system message is sent to an
+        of system message</a>. Every time a system message is sent to an
         application, if there is no handler for that message's type, the UA MUST
         add the message to the pool of messages used for that type.<br>
         The UA MAY, for memory optimization, discard old messages if the pool
@@ -1266,7 +1266,7 @@
         really go into a specific specification or a related to specifications
         that might be harder to change.</p>
 
-        <p>Thus, this specification is defining the following permissions:</p>
+        <p>Thus, this specification defines the following permissions:</p>
 
         <table>
           <tr>
@@ -1355,7 +1355,7 @@
           if it does not trust its ability to keep safe its private key.</p>
 
           <p>On the other hands, a signed manifest only proves that the
-          application is genuinly trusted (if the private key was not
+          application is genuinely trusted (if the private key was not
           compromised nor the cryptographic algorithm). Anything else can be
           compromised given that it lives in the Internet. There is no need to
           list all possible attacks.</p>
@@ -1370,7 +1370,7 @@
           avoided if the installation origin trusts enough an application
           developer. Such developer could get all its <a>packaged
           application</a>s trusted without too much risk for the users.<br>
-          The same thing colud be done for <a>hosted application</a> except that
+          The same thing could be done for <a>hosted application</a> except that
           it would be recommended to make sure that the developer has strong
           server security or would not risk any security flaw on their servers.
           </p>
@@ -1474,7 +1474,7 @@
 
       <section class='issue'>
           <p>The specification currently assumes that one will save important
-          when paused so there is no terminate event when transitionning from
+          when paused so there is no terminate event when transitioning from
           pause to terminate.</p>
       </section>
 
@@ -1502,7 +1502,7 @@
       <section class="note">
         <p>The <a>DOMRequest</a> interface is temporarily hosted by this
           specification. The <i>Runtime and Security Model for Web Applications
-          </i> specificaton doesn't plan to keep that guest for ever, this is
+          </i> specificaton does not plan to keep that guest for ever, this is
           why it is currently staying in an appendix.</p>
       </section>
 
@@ -1522,7 +1522,7 @@
       <section>
         <h2>Definition</h2>
 
-        <p>The <a>DOMRequest</a> interface is intented to be used by
+        <p>The <a>DOMRequest</a> interface is intended to be used by
         asynchronous methods that want to return something after performing an
         action or simply want to inform the caller that the action is done.<br>
         It returned request can also be used to inform that an error happened
@@ -1543,7 +1543,7 @@
         message MUST be ignored.</p>
 
         <p>A <dfn>success message</dfn> SHOULD be sent to the <a>DOMRequest</a>
-        when the operation is successfuly terminated. The message MAY contain a
+        when the operation is successfully terminated. The message MAY contain a
         value which MUST be used by the <code>result</code> attribute. If the
         message does not contain a value, <i>null</i> MUST be used instead.</p>
 
@@ -1640,7 +1640,7 @@
       Application Runtime: Execution and Security Model</i> specification.</p>
 
       <p>Special thanks to Anant Narayanan for his <i>Web Application Manifest
-      Format and Management APIs</i> that this specification reuse shamlesly and
+      Format and Management APIs</i> that this specification reuse shamelessly and
       to Jonas Sicking for being awesome, as always.</p>
 
     </section>
