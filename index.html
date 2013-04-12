@@ -276,7 +276,7 @@
           <li><dfn id="propdef-version">version</dfn>: The value MUST be a
           string that represents the version of the application. The UA SHOULD
           NOT interpret this value but MAY show it to the user so the author
-          SHOULD use human understandable versions.</dfn>
+          SHOULD use human understandable versions.</li>
 
           <li><dfn id="propdef-screen_size">screen_size</dfn>: This object
           SHOULD contain the <code>min_height</code> and <code>min_width</code>
@@ -1344,7 +1344,7 @@
 
           <p>A <a>packaged application</a> MUST be recognized as marked trusted
           by the installation origin if the package is signed by the
-          installation origin's private key.</a>
+          installation origin's private key.</p>
 
           <p>In both cases, the application SHOULD be considered as trusted by
           the UA if the UA considers the installation origin as trusted,
@@ -1404,7 +1404,7 @@
             <li>Inline scripts can not be used;</li>
             <li>eval() can not be used. Neither can eval-like functions like
             setTimeout or "new Function". setTimeout can still be used as long
-            as the first argument is a Function object rather than a string;<il>
+            as the first argument is a Function object rather than a string;</li>
             <li>onXXX attributes can't be used in the markup of pages. However,
             using the associated <a>EventHandler</a> is doable. For example:
             myElement.onXXX = someFunction;</li>
@@ -1415,7 +1415,7 @@
             however allowed.</li>
           </ul></p>
 
-          <p>This does not restrict any of the following:
+          <p>This does not restrict any of the following:</p>
           <ul>
             <li>&lt;iframe&gt;s can still point to any URL;</li>
             <li>Images can still be loaded from anywhere. Including when loaded
@@ -1424,7 +1424,7 @@
             <li>Media (audio and video) can still be loaded from anywhere;</li>
             <li>Network connections can still be opened anywhere using
             data-centric APIs like XMLHttpRequest or WebSocket.</li>
-          </ul></p>
+          </ul>
 
           <p>There is no way for <a>trusted application</a>s to relax this
           policy.</p>
