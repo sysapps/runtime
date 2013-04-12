@@ -605,16 +605,16 @@
             method MUST be a no-op.</dd>
 
             <dt>attribute EventHandler onlaunch</dt>
-            <dd></dd>
+            <dd><div class="todo">TBD</div></dd>
 
             <dt>attribute EventHandler onpause</dt>
-            <dd></dd>
+            <dd><div class="todo">TBD</div></dd>
 
             <dt>attribute EventHandler onresume</dt>
-            <dd></dd>
+            <dd><div class="todo">TBD</div></dd>
 
             <dt>attribute EventHandler onterminate</dt>
-            <dd></dd>
+            <dd><div class="todo">TBD</div></dd>
 
           </dl>
           </section>
@@ -790,28 +790,25 @@
             true if there is an installed application fulfilling the condition,
             otherwise <code>result</code> should be set to false.</dd>
 
-            <div class="todo">
+            <dt class="todo">
               checkInstalled() could be synchronous. Seems way more convenient.
-            </div>
+            </dt>
 
-            <div class="todo">
+            <dd class="todo">
               <ul>
                 <li>What's the real difference between getSelf() and getInstalled()?</li>
                 <li>Can an application be not installed but still in the registry? How?</li>
               </ul>
-            </div>
+            </dd>
 
             <dt>attribute ApplicationManagement management</dt>
             <dd>If the caller is not allowed to manage applications, the UA MUST
                 return null. Otherwise, it MUST return an
-                <a>ApplicationManagement</a> object.</dd>
-
-            <div class="todo">
-              <ul>
+                <a>ApplicationManagement</a> object.
+                <ul  class="todo">
                 <li>Permission check is not clearly defined here. Should it be better?</li>
-              </ul>
-            </div>
-
+                </ul>
+             </dd>
           </dl>
           </section>
         </section>
@@ -829,18 +826,18 @@
             <dt class='no-docs'>
               DOMRequest getAll()
             </dt>
-            <dd></dd>
+            <dd><div class="todo">TBD</div></dd>
 
             <dt class='no-docs'>
               DOMRequest applyUpdate(Application application)
             </dt>
-            <dd></dd>
+            <dd><div class="todo">TBD</div></dd>
 
             <dt class='no-docs'>attribute EventHandler oninstall</dt>
-            <dd></dd>
+            <dd><div class="todo">TBD</div></dd>
 
             <dt class='no-docs'>attribute EventHandler onuninstall</dt>
-            <dd></dd>
+            <dd><div class="todo">TBD</div></dd>
           </dl>
 
           <p>The <code>getAll</code> method SHOULD return a <a>DOMRequest</a>
@@ -928,11 +925,11 @@
           <dl title='[Constructor(DOMString type, ApplicationEventInit eventInitDict)]
                     interface ApplicationEvent : Event' class='idl'>
             <dt>readonly attribute Application application</dt>
-            <dd></dd>
+            <dd><div class="todo">TBD</div></dd>
           </dl>
           <dl title='dictionary ApplicationEventInit : EventInit' class='idl'>
             <dt>Application application</dt>
-            <dd></dd>
+            <dd><div class="todo">TBD</div></dd>
           </dl>
         </section>
 
@@ -1601,10 +1598,10 @@
           failure.</dd>
 
           <dt>[TreatNonCallableAsNull] attribute EventHandler onsuccess</dt>
-          <dd></dd>
+          <dd><div class="todo">TBD</div></dd>
 
           <dt>[TreatNonCallableAsNull] attribute EventHandler onerror</dt>
-          <dd></dd>
+          <dd><div class="todo">TBD</div></dd>
         </dl>
         </section>
 
