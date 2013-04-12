@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
     <title>Runtime and Security Model for Web Applications</title>
-    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
     <script src="http://www.w3.org/Tools/respec/respec-w3c-common" class="remove"></script>
     <script class='remove'>
       var respecConfig = {
@@ -40,7 +40,7 @@
       };
     </script>
     <style>
-      todo { display: none; }
+      .todo { display: none; }
     </style>
   </head>
 
@@ -790,27 +790,27 @@
             true if there is an installed application fulfilling the condition,
             otherwise <code>result</code> should be set to false.</dd>
 
-            <todo>
+            <div class="todo">
               checkInstalled() could be synchronous. Seems way more convenient.
-            </todo>
+            </div>
 
-            <todo>
+            <div class="todo">
               <ul>
                 <li>What's the real difference between getSelf() and getInstalled()?</li>
                 <li>Can an application be not installed but still in the registry? How?</li>
               </ul>
-            </todo>
+            </div>
 
             <dt>attribute ApplicationManagement management</dt>
             <dd>If the caller is not allowed to manage applications, the UA MUST
                 return null. Otherwise, it MUST return an
                 <a>ApplicationManagement</a> object.</dd>
 
-            <todo>
+            <div class="todo">
               <ul>
                 <li>Permission check is not clearly defined here. Should it be better?</li>
               </ul>
-            </todo>
+            </div>
 
           </dl>
           </section>
@@ -850,10 +850,10 @@
           <code>success</code> event to the <a>DOMRequest</a> object and
           populate its <code>request</code> attribute with an array of
           <a>Application</a> objects representing the applications.</p>
-          the applications.</p>
+          
 
           <p>The <code>applyUpdate</code> method MUST return a <a>DOMRequest</a>
-          object and perform the following steps asynchronously:
+          object and perform the following steps asynchronously:</p>
           <ol>
             <li>If the application does not have an update or the update
             is not fully downloaded, the UA MUST send an <a>error message</a>
@@ -869,7 +869,7 @@
             request with an <a>Application</a> object representing the updated
             application as a value.</li>
           </ol>
-          </p>
+          
         </section>
 
         <section>
@@ -941,15 +941,14 @@
         The application events are always sent asynchronously, do not bubble and
         are not cancelable.</p>
 
-        <p>
-          There are currently two types of Application Events:
+        <p>There are currently two types of Application Events:</p>
           <ul>
             <li><dfn>install</dfn> is sent when an application is installed.
             <code>application</code> MUST represent the installed application.</li>
             <li><dfn>uninstall</dfn> is sent when an application is uninstalled.
             <code>application</code> MUST represent the uninstalled application.</li>
           </ul>
-        </p>
+        
       </section>
 
     </section>
@@ -969,7 +968,7 @@
         <h2>Use cases</h2>
 
         <p>A <a>packaged application</a> would be useful in a few situations,
-        amongst them:
+        amongst them:</p>
         <ul>
           <li>If a marketplace wants to guarantee that an application is safe,
           it allows it to review the application codes and makes sure that all
@@ -980,7 +979,7 @@
           investing in a server infrastructure. Any client-side only
           applications written on top of the Web Platform will be able to be
           very easily distributed that way.</li>
-        </ul></p>
+        </ul>
 
       </section>
 
@@ -998,7 +997,7 @@
         <h2>URI of a packaged file</h2>
 
         <p>A file contained in a <a>packaged application</a> MUST have an URI
-        with the following rules:
+        with the following rules:</p>
         <ul>
           <li>The <code>scheme</code> of the URI MUST be <i>app</i>.</li>
           <li>The <code>authority</code> of the URI MUST be an identifier unique
@@ -1008,7 +1007,7 @@
           <li>The <code>path</code> of the URI MUST be the file name.</li>
           <li>Any other parts of the URI MUST be empty.</li>
         </ul>
-        </p>
+        
 
         <p>For more information about URI's, refer to [[!RFC3986]].</p>
 
@@ -1032,9 +1031,10 @@
         and updates purposes. As a consequence, that copy of the <a>application
         manifest</a> can be reduced to only a few properties: <a>name</a>,
         <a>version</a> and <a>relNotes</a>. In addition, a new property can be
-        used only in the content a packaged <a>application manifest<a>: <dfn
+        used only in the content a packaged <a>application manifest</a>: <dfn
         id='prop-package'>package</dfn> that SHOULD contain an object with the
-        following properties:
+        following properties:</p>
+        
         <ul>
           <li><dfn id='prop-package-url'>url</dfn>: this property MUST contain
           the URL of the package related to that <a>application manifest</a>.
@@ -1047,7 +1047,7 @@
           <li><dfn id='prop-package-sha256'>sha256</dfn>: this property SHOULD
           contain the SHA256 checksum of the package and SHOULD be used by the
           UA to verify the integrity of the downloaded package.</li>
-        </ul></p>
+        </ul>
 
         <pre class='example highlight'>
         {
@@ -1068,13 +1068,13 @@
         </pre>
       </section>
 
-      <todo>
+      <div class="todo">
         * Add relNotes to the properties of the manifest, like:
         'relNotes': {
           '1.0': "This is what has been done...",
           '0.1': "That was so long ago..."
         }
-      </todo>
+      </div>
 
     </section>
 
@@ -1124,12 +1124,12 @@
       navigating outside the <a>application's origin</a> might lock the user out
       of the application. To prevent that, the UA SHOULD NOT allow navigation
       out of the <a>application's origin</a>, unless the origin is specified in
-      the following <a>application manifest</a> property:
+      the following <a>application manifest</a> property:</p>
       <ul>
         <li><dfn id='prop-allow-navigation'>allow-navigation</dfn>: the property
         SHOULD contain an array of origins that can be navigated to from the
         application.</li>
-      </ul></p>
+      </ul>
 
       <p>If the application tries to navigate to an unauthorized origin, the UA
       SHOULD open the link in a regular but distinct browsing context.</p>
@@ -1138,7 +1138,7 @@
     <section>
       <h2>System Messages</h2>
 
-      <todo>
+      <div class="todo">
         TODO: We might want to have something describing how an application goes
         inactive, get killed and everything to have a better description of
         system messages.
@@ -1146,7 +1146,7 @@
         TODO: there is no notion of multi-page applications in this description
         of system messages. We do not handle system messages that are registered
         on another page.
-      </todo>
+      </div>
 
       <p><i>System Messages</i> are events sent by the system to an application
       which has registered for it before. Those events are different from DOM
@@ -1224,7 +1224,7 @@
         becomes too big or if the messages are too old.
 
         <p>When a UA is required to <dfn>fire a system message</dfn> of a given
-        type, it has to do one of these actions:
+        type, it has to do one of these actions:</p>
         <ul>
           <li>If the application is running and a handler is defined, the UA
           MUST run the handling method;</li>
@@ -1233,7 +1233,6 @@
           <li>Otherwise, if the application is not running, the UA MUST add the
           message to the <a>pool of messages</a> and start the application.</li>
         </ul>
-        </p>
       </section>
 
     </section>
@@ -1397,7 +1396,7 @@
           style-src 'self'</code></p>
 
           <p>This puts the following restrictions on web pages part of a
-          <a>trusted application</a>:
+          <a>trusted application</a>:</p>
           <ul>
             <li>Scripts can only be loaded from the package;</li>
             <li>Scripts can not use data:-URIs;</li>
@@ -1413,7 +1412,7 @@
             flash.</li>
             <li>CSS can only be loaded from the package. Inline CSS is
             however allowed.</li>
-          </ul></p>
+          </ul>
 
           <p>This does not restrict any of the following:</p>
           <ul>
@@ -1471,7 +1470,7 @@
         <a>terminated</a> application can only be changed to
         <a>running</a> if the application is launched again.</p>
 
-        <p>If a <a>terminated</a> application transitions to a <a>running<a>
+        <p>If a <a>terminated</a> application transitions to a <a>running</a>
         state, the UA MUST <a>fire a simple event</a> named <code>launch</code>
         on the <a>Application</a> object after the main browsing context is
         created but before the <code>load</code> and <code>DOMContentLoaded</code>
@@ -1530,21 +1529,24 @@
 
         <p>The <a>DOMRequest</a> interface is intended to be used by
         asynchronous methods that want to return something after performing an
-        action or simply want to inform the caller that the action is done.<br>
+        action or simply want to inform the caller that the action is done. 
         It returned request can also be used to inform that an error happened
         during the operation.</p>
 
-        <p><a>A <a>DOMRequest</a> has three state. It is whether
+        <p>A <a>DOMRequest</a> has three state. It is whether
         <code>pending</code>, <code>success</code> or <code>error</code>.<br>
         The initial state of a <a>DOMRequest</a> MUST be <code>pending</code>.
-        <br>
-        If a <a>DOMRequest</a> receives a <a>success message</a> while in the
+        </p>
+        
+        <p>If a <a>DOMRequest</a> receives a <a>success message</a> while in the
         <code>pending</code> state, its state MUST change to
-        <code>success</code> and SHOULD NOT change afterward.<br>
-        If a <a>DOMRequest</a> receives an <a>error message</a> while in the
+        <code>success</code> and SHOULD NOT change afterward.</p>
+        
+        <p>If a <a>DOMRequest</a> receives an <a>error message</a> while in the
         <code>pending</code> state, its state MUST change to <code>error</code>
-        and SHOULD NOT change afterward.<br>
-        If a <a>DOMRequest</a> receives a <a>success message</a> or an
+        and SHOULD NOT change afterward.</p>
+        
+        <p>If a <a>DOMRequest</a> receives a <a>success message</a> or an
         <a>error message</a> while not in the <code>pending</code> state, the
         message MUST be ignored.</p>
 
