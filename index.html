@@ -84,11 +84,10 @@
     life cycle of their application.</p>
   </section>
 
-	<section id="conformance">
-    	<h2>Conformance</h2>
-         <p>There is only one class of  product that can claim conformance to 
-         this specification: a <dfn>user agent</dfn>.</p>
-    </section>
+  <section id="conformance">
+    <p>There is only one class of  product that can claim conformance to
+    this specification: a <dfn>user agent</dfn>.</p>
+  </section>
 
     <section>
       <h2>Terminology</h2>
@@ -1302,48 +1301,54 @@
       </section>
 
       <section>
-        <h2>Trusted applications</h2>
+        <h2>Privileged applications</h2>
 
         <section class="informative">
           <h2>Use cases</h2>
 
-          <p>Any application can be compromised. It just depends on how much
-          effort the attacker wants to provide and how much efforts the author
-          wants to dedicate making its application more secure. With an
-          interesting enough outcome, attackers could easily double their
-          efforts to beat the security in place. For example, an API allowing to
-          send SMS, if it can be manipulated by the evil persons, could be used
-          to send premium SMS and steal money from the users.</p>
+          <p>Some applications require access to APIs which, if abused, may cause
+          significant damage to the end user's services, data or devices.  For 
+          example, an API allowing the use of SMS could be misused by a malicious
+          application to send unwanted premium-rate messages costing the user 
+          money.</p> 
 
-          <p>With a simple permission system, users could be tricked to install
-          the application and accept to grant the application the relevant
-          permissions. These kind of attacks are proven to be efficient.</p>
+          <p>Because the impact of using a malicious application with these
+          privileges is higher, additional security mechanisms and processes are
+          necessary to minimize the additional risk they present.  This might 
+          include, for example, mandatory review of applications or certification.  
+          A simple user-authorized permission system is considered insufficient: 
+          users could be tricked into granting a malicious application access to 
+          inappropriate APIs, services or data.</p>
+
+          <p>As a complement to permissioning, this specification defines a 
+          <em>privileged</em> class of application.  Applications which are not
+          privileged will not be able to access potentially dangerous APIs.</p>
         </section>
 
         <section>
           <h2>Chain of trust</h2>
 
-          <p>An application is said to be a <dfn>trusted application</dfn> if
+          <p>An application is said to be a <dfn>privileged application</dfn> if
           the origin installing the application is trusted by the UA and the
-          origin installing the application consider the application as
-          trusty.</p>
+          origin installing the application considers the application to be 
+          trustworthy.</p>
 
-          <p>A UA SHOULD have the public key of all installation origin it is
-          considering trusted.</p>
+          <p>A UA SHOULD have the public key of all installation origins it 
+          considers to be trusted.</p>
         </section>
 
         <section>
-          <h2>Marking an application trusted</h2>
+          <h2>Marking an application privileged</h2>
 
-          <p>A <a>hosted application</a> MUST be recognized as marked trusted by
+          <p>A <a>hosted application</a> MUST be recognized as marked privileged by
           the installation origin if the <a>application manifest</a> is signed
           by the installation origin's private key.</p>
 
-          <p>A <a>packaged application</a> MUST be recognized as marked trusted
+          <p>A <a>packaged application</a> MUST be recognized as marked privileged
           by the installation origin if the package is signed by the
           installation origin's private key.</p>
 
-          <p>In both cases, the application SHOULD be considered as trusted by
+          <p>In both cases, the application SHOULD be considered as privileged by
           the UA if the UA considers the installation origin as trusted,
           following the chain of trust mentioned above.</p>
         </section>
@@ -1383,18 +1388,18 @@
           <h2>CSP Policy</h2>
 
           <section class="note">
-            The following sub-section assumes that a <a>trusted application</a>
+            The following sub-section assumes that a <a>privileged application</a>
             can only be a <a>packaged application</a>. This needs to be updated.
           </section>
 
-          <p>The following CSP policy MUST apply to all <a>trusted
+          <p>The following CSP policy MUST apply to all <a>privileged
           application</a>s [[!CSP]]:<br></p>
 
           <p><code>default-src *; script-src 'self'; object-src 'none';
           style-src 'self'</code></p>
 
           <p>This puts the following restrictions on web pages part of a
-          <a>trusted application</a>:</p>
+          <a>privileged application</a>:
           <ul>
             <li>Scripts can only be loaded from the package;</li>
             <li>Scripts can not use data:-URIs;</li>
@@ -1423,7 +1428,7 @@
             data-centric APIs like XMLHttpRequest or WebSocket.</li>
           </ul>
 
-          <p>There is no way for <a>trusted application</a>s to relax this
+          <p>There is no way for <a>privileged application</a>s to relax this
           policy.</p>
         </section>
       </section>
