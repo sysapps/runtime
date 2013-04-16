@@ -13,16 +13,12 @@ var respecConfig = {
         specStatus:           "ED",
         shortName:            "runtime",
 
-        // TODO
         //publishDate:  "2012-12-12",
-        //previousPublishDate:  "2011-06-07",
-        //previousMaturity:     "ED",
-        edDraftURI: "http://sysapps.github.com/runtime/index.html",
-
-        // if this is a LCWD, uncomment and set the end of its review period
-        // lcEnd: "2009-08-05",
-        extraCSS:   ["../ReSpec.js/css/respec.css"],
-        noIDLIn:    true,
+        previousPublishDate:  "2013-03-21",
+        previousMaturity:     "FPWD",
+        edDraftURI:           "http://sysapps.github.com/runtime/index.html",
+        // lcEnd: "3000-01-01",
+        // crEnd: "3000-01-01",
 
         editors: [
             {
@@ -36,6 +32,11 @@ var respecConfig = {
               companyURL: "http://www.samsung.com/sec"
             },
         ],
+
+        inlineCSS:     true,
+        noIDLIn:       true,
+        noLegacyStyle: false,
+        extraCSS:      ["../ReSpec.js/css/respec.css"],
 
         wg:           "System Applications Working Group",
         wgURI:        "http://www.w3.org/2012/sysapps/",
@@ -928,23 +929,24 @@ var respecConfig = {
             </dt>
             <dd>
               The UA SHOULD return a <a>DOMRequest</a> object and
-              asynchronously get all applications that have an origin matching
-              the caller's origin. [[!ORIGIN]]<br>
-              When those applications are collected, the UA SHOULD send a
-              <code>success</code> event to the <a>DOMRequest</a> object and
-              populate its <code>request</code> attribute with an array of
-              <a>Application</a> objects representing the applications.
+              asynchronously check if the current context is an application
+              context.<br>
+              When the check is done, the UA SHOULD send a <code>success</code>
+              event to the <a>DOMRequest</a> object and sets its
+              <code>result</code> attribute to the <a>Application</a> object
+              representing the current context or <code>null</code> if the
+              current context is not an application context.
             </dd>
             <dt>
               DOMRequest getInstalled()
             </dt>
             <dd>
               The UA SHOULD return a <a>DOMRequest</a> object and
-              asynchronously get all applications that have an origin matching
+              asynchronously get all applications that have been installed by
               the caller's origin. [[!ORIGIN]]<br>
               When those applications are collected, the UA SHOULD send a
               <code>success</code> event to the <a>DOMRequest</a> object and
-              populate its <code>request</code> attribute with an array of
+              populate its <code>result</code> attribute with an array of
               <a>Application</a> objects representing the applications.
             </dd>
             <dt>
@@ -978,12 +980,6 @@ var respecConfig = {
             <ul>
               <li>checkInstalled() could be synchronous. Seems way more
               convenient.
-              </li>
-              <li>What's the real difference between getSelf() and
-              getInstalled()?
-              </li>
-              <li>Can an application be not installed but still in the
-              registry? How?
               </li>
             </ul>
           </div>
@@ -1036,8 +1032,7 @@ var respecConfig = {
           </dl>
           <p>
             The <code>getAll</code> method SHOULD return a <a>DOMRequest</a>
-            object and asynchronously get all applications currently in the
-            application registry.<br>
+            object and asynchronously get all installed applications.<br>
             When those applications are collected, the UA SHOULD send a
             <code>success</code> event to the <a>DOMRequest</a> object and
             populate its <code>request</code> attribute with an array of
