@@ -193,7 +193,7 @@ var respecConfig = {
         the following algorithm. This algorithm can be applied equally to
         manifests fetched from HTTP/S or those derived over the app URI scheme.
       </p>
-      <ol class="algorithm">
+      <ol>
         <li>Let <var>url</var> be a <a href=
         "http://www.whatwg.org/specs/web-apps/current-work/multipage/urls.html#url">
           URL</a> with character encoding [[!UTF-8]] that represents the
@@ -226,7 +226,7 @@ var respecConfig = {
         The <dfn>steps for processing an application manifest</dfn> are given
         by the following algorithm.
       </p>
-      <ol class="algorithm">
+      <ol>
         <li>Let <var>text</var> be the text to be processed.
         </li>
         <li>Let <var>manifest</var> result of invoking the parse function of
@@ -369,9 +369,9 @@ var respecConfig = {
   "relNotes": {
     "1.0": "Bugs fixed. New exciting effects. Ready for an official release!",
     "0.5": "First alpha version with still some bugs but already fun!"
-  },
+  }
   <!-- See https://github.com/sysapps/runtime/pull/11 
-  
+  ,
   "data": {
      myCustomAppData: ["x", "y", {"z": "foo"}]
   }
@@ -445,7 +445,7 @@ var respecConfig = {
           where the locale is unknown. The algorithm returns either a value
           from the namifest or <code>undefined</code>.
         </p>
-        <ol class="algorithm">
+        <ol>
           <li>Let <var>manifest</var> be the JSON-parsed object representation
           of the <a>application manifest</a>.
           </li>
@@ -507,7 +507,7 @@ var respecConfig = {
           following algorithm. The algorithm takes an application manifest as
           an argument and returns either an error or a string:
         </p>
-        <ol class="algorithm">
+        <ol>
           <li>Let <var>key</var> be the string "<code>name</code>".
           </li>
           <li>Let <var>present</var> be the result of calling
@@ -544,7 +544,7 @@ var respecConfig = {
           manifest as an argument and returns a string or
           <code>undefined</code>:
         </p>
-        <ol class="algorithm">
+        <ol>
           <li>Let <var>key</var> be the string "description".
           </li>
           <li>Let result be <code>undefined</code>.
@@ -588,7 +588,7 @@ var respecConfig = {
           or the string "*" (which is used to represent an <a>unknown
           locale</a>).
         </p>
-        <ol class="algorithm">
+        <ol>
           <li>Let <var>result</var> be "*".
           </li>
           <li>Let <var>key</var> be "<code>default_locale</code>".
@@ -641,7 +641,7 @@ var respecConfig = {
           member</dfn> are given by the following algorithm. The algorithm
           returns either a string, and error, or <code>undefined</code>.
         </p>
-        <ol class="algorithm">
+        <ol>
           <li>Let <var>result</var> be <code>undefined.</code>
           </li>
           <li>Let <var>key</var> be the string "<code>launch_path</code>".
@@ -722,7 +722,7 @@ var respecConfig = {
           member</dfn> are given by the following algorithm. The algorithm
           returns either a string, and error, or <code>undefined</code>.
         </p>
-        <ol class="algorithm">
+        <ol>
           <li>Let <var>result</var> be <code>undefined.</code>
           </li>
           <li>Let <var>key</var> be the string "<code>appcache_path</code>".
@@ -766,7 +766,7 @@ var respecConfig = {
           is given by the following algorithm. The algorithm returns either
           undefined or a string:
         </p>
-        <ol class="algorithm">
+        <ol>
           <li>Let <var>result</var> be <code>undefined</code>.
           </li>
           <li>Let <var>key</var> be the string "version".
@@ -1080,7 +1080,7 @@ var respecConfig = {
             object</dfn> is given by the following algorithm. The algorithm
             returns <code>undefined</code> or a string:
           </p>
-          <ol class="algorithm">
+          <ol>
             <li>Let <var>O</var> be the result of running the <a>steps for
             retrieving a localizable member from the manifest</a>, with
             "<var>developer"</var> as the member being sought.
