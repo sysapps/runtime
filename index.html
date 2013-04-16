@@ -177,14 +177,14 @@ var respecConfig = {
         application manifest document.
       </p>
       <p>
-        Certain error conditions can result in an&nbsp;<a>application
-        manifest</a>&nbsp;being treated as an <a>invalid manifest</a>.
-        An&nbsp;<dfn>invalid manifest</dfn>&nbsp;is an application manifest
+        Certain error conditions can result in an <a>application
+        manifest</a> being treated as an <a>invalid manifest</a>.
+        An <dfn>invalid manifest</dfn> is an application manifest
         that is deemed to be non-conforming in such a way that it would not be
         possible for the user agent to continue processing (e.g., it can't be
         parsed by the JSON parser). In such a case, the user agent may report
         the error to the user in a user-agent-specific manner,
-        may&nbsp;<a href="http://www.whatwg.org/specs/web-apps/current-work/#navigate">navigate</a>&nbsp;to
+        may <a href="http://www.whatwg.org/specs/web-apps/current-work/#navigate">navigate</a> to
         an error page to report the error, or may ignore the error and do
         nothing. In either case, when a step results in an <a>invalid
         manifest</a> the user agent MUST abort whatever steps caused the
@@ -196,30 +196,30 @@ var respecConfig = {
         manifests fetched from HTTP/S or those derived over the app URI scheme.
       </p>
       <ol class="algorithm">
-        <li>Let <var>url</var> be a&nbsp;<a href=
-        "http://www.whatwg.org/specs/web-apps/current-work/multipage/urls.html#url">URL</a>&nbsp;with
+        <li>Let <var>url</var> be a <a href=
+        "http://www.whatwg.org/specs/web-apps/current-work/multipage/urls.html#url">URL</a> with
         character encoding [[!UTF-8]] that represents the <a>application
         manifest</a>.
         </li>
         <li>Let <var>origin</var> be ??.
         </li>
         <li>Resolve <var>url</var> relative to <var>origin</var>.
-        If&nbsp;<a href=
+        If <a href=
         "http://www.whatwg.org/specs/web-apps/current-work/#resolve-a-url"
-        title="resolve a url">resolving</a>&nbsp;the&nbsp;<a href=
-        "http://www.whatwg.org/specs/web-apps/current-work/#url">URL</a>&nbsp;fails,
+        title="resolve a url">resolving</a> the <a href=
+        "http://www.whatwg.org/specs/web-apps/current-work/#url">URL</a> fails,
         then treat this as an <a>invalid manifest</a>.
         </li>
         <li>Let <var>response body</var> be the <a href=
         "http://xhr.spec.whatwg.org/#response-entity-body">response entity
         body</a> resulting from of asynchronously <a href=
-        "http://www.whatwg.org/specs/web-apps/current-work/#fetch">fetching</a>&nbsp;
+        "http://www.whatwg.org/specs/web-apps/current-work/#fetch">fetching</a> 
         <var>url</var>, with <var>origin</var> as the origin, and with the
         force same-origin flag set.
         </li>
-        <li>Let&nbsp;<var>text</var>&nbsp;be the result of
-          running&nbsp;<a href="http://encoding.spec.whatwg.org/#utf-8-decode">utf-8
-          decode</a>&nbsp;on the byte stream&nbsp;<a href=
+        <li>Let <var>text</var> be the result of
+          running <a href="http://encoding.spec.whatwg.org/#utf-8-decode">utf-8
+          decode</a> on the byte stream <a href=
           "http://xhr.spec.whatwg.org/#response-entity-body"></a><var>response
           body</var>.
         </li>
@@ -234,8 +234,8 @@ var respecConfig = {
         <li>Let <var>text</var> be the text to be processed.
         </li>
         <li>Let <var>manifest</var> result of invoking
-        the&nbsp;parse&nbsp;function of the&nbsp;JSON&nbsp;object defined in
-        [[!ECMA-262-51]] with&nbsp;<var>text</var>&nbsp;as its only argument. If
+        the parse function of the JSON object defined in
+        [[!ECMA-262-51]] with <var>text</var> as its only argument. If
         parsing throws an exception, then treat this application manifest as an
         <a>invalid manifest</a>.
         </li>
@@ -371,21 +371,21 @@ var respecConfig = {
           preferred languages and regional settings (e.g., the end user might
           have set them in the user agent's preferences), the means by which
           those values are derived are left up to the implementation. The first
-          item of the&nbsp;<a>user agent's locales</a>&nbsp;represents the
+          item of the <a>user agent's locales</a> represents the
           user's most preferred language range (i.e., the language/region
           combination the user agent assumes the end-user most prefers),
           followed by the next most preferred language range, and so forth.
         </p>
         <p>
         A <dfn>language tag</dfn> is a string that matches the production of a
-        <code>Language-Tag</code> defined in the <a>[[!BCP47]]</a>
+        <code>Language-Tag</code> defined in the [[!BCP47]]
         specifications (see the <a href=
         "http://www.iana.org/assignments/language-subtag-registry">IANA
         Language Subtag Registry</a> for an authoritative list of possible
         values, see also the <a href=
         "http://www.iso.org/iso/country_codes/iso_3166_code_lists/country_names_and_code_elements">
         Maintenance Agency for ISO 3166 country codes</a>). That is, a language range is composed of one or
-          more&nbsp;<dfn>subtags</dfn> that are delimited by a U+002D
+          more <dfn>subtags</dfn> that are delimited by a U+002D
           HYPHEN-MINUS ("-"). For example, the '<code>en-AU</code>' language
           range represents English as spoken in Australia, and
           '<code>fr-CA</code>' represents French as spoken in Canada. Language tags that
@@ -478,9 +478,9 @@ var respecConfig = {
       <ol class="algorithm">
         <li>Let <var>key</var> be the string "<code>name</code>".
         </li>
-        <li>Let&nbsp;<var>present</var>&nbsp;be the result of calling
-        [[[HasOwnProperty]]]&nbsp;internal method
-        of&nbsp;<var>manifest</var>&nbsp;with argument&nbsp;<var>key</var>.
+        <li>Let <var>present</var> be the result of calling
+        [[[HasOwnProperty]]] internal method
+        of <var>manifest</var> with argument <var>key</var>.
         </li>
         <li>If <var>present</var> is <code>false</code>, return an error and
         terminate this algorithm.
@@ -560,16 +560,16 @@ var respecConfig = {
         </li>
         <li>Let <var>key</var> be "<code>default_locale</code>".
         </li>
-        <li>Let&nbsp;<var>present</var>&nbsp;be the result of calling
-        [[[HasOwnProperty]]]&nbsp;internal method
-        of&nbsp;<var>manifest</var>&nbsp;with argument&nbsp;<var>key</var>.
+        <li>Let <var>present</var> be the result of calling
+        [[[HasOwnProperty]]] internal method
+        of <var>manifest</var> with argument <var>key</var>.
         </li>
         <li>If <var>present</var> is <var>true</var>:
           <ol>
             <li>Let <var>value</var> be the result of calling the
             [[GetOwnProperty]] internal method
-            of&nbsp;<var>manifest</var>&nbsp;passing <var>key</var> as the
-            argument.&nbsp;
+            of <var>manifest</var> passing <var>key</var> as the
+            argument. 
             </li>
             <li>Let <var>tag</var> be <a>ToString</a>(<var>value</var>).
             </li>
@@ -580,9 +580,9 @@ var respecConfig = {
             <li>If <var>valid tag</var> is <code>true</code>, then:
               <ol>
                 <li>Let <var>result</var> be the result of calling the abstract
-                operation&nbsp;<a href=
+                operation <a href=
                 "http://www.ecma-international.org/ecma-402/1.0/#sec-6.2.3">CanonicalizeLanguageTag</a>,
-                passing&nbsp;<em>tag</em>&nbsp;as the argument.
+                passing <em>tag</em> as the argument.
                 </li>
               </ol>
             </li>
@@ -613,9 +613,9 @@ var respecConfig = {
         </li>
         <li>Let <var>key</var> be the string "<code>launch_path</code>".
         </li>
-        <li>Let&nbsp;<var>present</var>&nbsp;be the result of calling
-        [[[HasOwnProperty]]]&nbsp;internal method
-        of&nbsp;<var>manifest</var>&nbsp;with argument&nbsp;<var>key</var>.
+        <li>Let <var>present</var> be the result of calling
+        [[[HasOwnProperty]]] internal method
+        of <var>manifest</var> with argument <var>key</var>.
         </li>
         <li>If present is <code>true</code>:
           <ol>
@@ -692,9 +692,9 @@ var respecConfig = {
         </li>
         <li>Let <var>key</var> be the string "<code>appcache_path</code>".
         </li>
-        <li>Let&nbsp;<var>present</var>&nbsp;be the result of calling
-        [[[HasOwnProperty]]]&nbsp;internal method
-        of&nbsp;<var>manifest</var>&nbsp;with argument&nbsp;<var>key</var>.
+        <li>Let <var>present</var> be the result of calling
+        [[[HasOwnProperty]]] internal method
+        of <var>manifest</var> with argument <var>key</var>.
         </li>
         <li>if <var>present</var> is <code>true</code>:
           <ol>
@@ -735,9 +735,9 @@ var respecConfig = {
         </li>
         <li>Let <var>key</var> be the string "version".
         </li>
-        <li>Let&nbsp;<var>present</var>&nbsp;be the result of calling
-        [[[HasOwnProperty]]]&nbsp;internal method
-        of&nbsp;<var>manifest</var>&nbsp;with argument&nbsp;<var>key</var>.
+        <li>Let <var>present</var> be the result of calling
+        [[[HasOwnProperty]]] internal method
+        of <var>manifest</var> with argument <var>key</var>.
         </li>
         <li>If <var>present</var> is <code>true</code>:
           <ol>
