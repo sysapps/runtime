@@ -103,19 +103,7 @@ var respecConfig = {
       <h2>
         Terminology
       </h2>
-      <p>
-        A <dfn>language tag</dfn> is a string that matches the production of a
-        <code>Language-Tag</code> defined in the <a>[[!BCP47]]</a>
-        specifications (see the <a href=
-        "http://www.iana.org/assignments/language-subtag-registry">IANA
-        Language Subtag Registry</a> for an authoritative list of possible
-        values, see also the <a href=
-        "http://www.iso.org/iso/country_codes/iso_3166_code_lists/country_names_and_code_elements">
-        Maintenance Agency for ISO 3166 country codes</a>). Language tags that
-        meet the validity criteria of [[!RFC5646]] section 2.2.9 that can be
-        verified without reference to the IANA Language Subtag Registry are
-        considered structurally valid.
-      </p>
+
       <p>
         The <dfn><a href=
         "http://dev.w3.org/html5/spec/webappapis.html#event-handlers">EventHandler</a></dfn>
@@ -154,16 +142,13 @@ var respecConfig = {
       </h2>
       <p>
         An <dfn>application manifest</dfn> is a [[!JSON]] document that
-        describes various aspects of a <a>packaged application</a> or <a>hosted
-        web application</a>. Some of these aspects are presentational, others
+        describes various aspects of a <a>packaged application</a> or hosted
+        web application. Some of these aspects are presentational, others
         aspects have security sensitive implications. An application manifest
         consists of a top-level object (the <dfn>manifest root</dfn>) and one
         or more members, some of which can themselves contain objects.
       </p>
-      <p>
-        Inside an <a>application package</a>, the <dfn>valid application
-        manifest filename</dfn> is <code>manifest.webapp</code>.
-      </p>
+      
       <p id="ecmascript-abstractop">
         Algorithms in this section use the conventions described in <a class=
         "external" href=
@@ -185,7 +170,7 @@ var respecConfig = {
         "http://people.mozilla.org/~jorendorff/es6-draft.html#sec-9.1.9"><dfn>ToObject</dfn></a>
         abstract operations and the <a class="external" href=
         "http://people.mozilla.org/~jorendorff/es6-draft.html#sec-8">Type(<var>x</var>)</a>
-        notation referenced in this section are defined in [[!ECMA-262]]. In
+        notation referenced in this section are defined in [[!ECMA-262-51]]. In
         the algorithms, to <dfn>ignore</dfn> means that the user agent MUST act
         as if the author had not declared the particular member in the
         application manifest document.
@@ -249,7 +234,7 @@ var respecConfig = {
         </li>
         <li>Let <var>manifest</var> result of invoking
         the&nbsp;parse&nbsp;function of the&nbsp;JSON&nbsp;object defined in
-        [[!ECMAScript]] with&nbsp;<var>text</var>&nbsp;as its only argument. If
+        [[!ECMA-262-51]] with&nbsp;<var>text</var>&nbsp;as its only argument. If
         parsing throws an exception, then treat this application manifest as an
         <a>invalid manifest</a>.
         </li>
@@ -368,17 +353,17 @@ var respecConfig = {
           Internationalization and localization
         </h3>
         <p>
-          The&nbsp;<dfn>user agent locales</dfn> is an ordered list of
-          <a>language tags</a> that are used to represent the end-user's
+          The <dfn>user agent locales</dfn> is an ordered list of
+          <a title="language tag">language tags</a> that are used to represent the end-user's
           language(s) and localization preference for experiencing content;
           these are essentially equivalent to the language tags sent by the
-          user agent through the <code>Accept-Language</code> [[HTTP]] header,
+          user agent through the <code>Accept-Language</code> [[HTTP11]] header,
           but without the quality values.
         </p>
         <p>
           The case sensitivity and case mapping for language tags is the same
           as that defined in section 6.1 of the ECMAScript Internationalization
-          API Specification [[!ECMA-402]]
+          API Specification [[!ECMAS-402]]
         </p>
         <p>
           As there are numerous ways a user agent can derive the end-user's
@@ -391,23 +376,26 @@ var respecConfig = {
           followed by the next most preferred language range, and so forth.
         </p>
         <p>
-          A&nbsp;<dfn>language tag</dfn>&nbsp;is a string that conforms to the
-          production of a&nbsp;<code>Language-Tag</code> as specified in
-          [[!BCP47]]. That is, a language range is composed of one or
+        A <dfn>language tag</dfn> is a string that matches the production of a
+        <code>Language-Tag</code> defined in the <a>[[!BCP47]]</a>
+        specifications (see the <a href=
+        "http://www.iana.org/assignments/language-subtag-registry">IANA
+        Language Subtag Registry</a> for an authoritative list of possible
+        values, see also the <a href=
+        "http://www.iso.org/iso/country_codes/iso_3166_code_lists/country_names_and_code_elements">
+        Maintenance Agency for ISO 3166 country codes</a>). That is, a language range is composed of one or
           more&nbsp;<dfn>subtags</dfn> that are delimited by a U+002D
           HYPHEN-MINUS ("-"). For example, the '<code>en-AU</code>' language
           range represents English as spoken in Australia, and
-          '<code>fr-CA</code>' represents French as spoken in Canada.
-        </p>
+          '<code>fr-CA</code>' represents French as spoken in Canada. Language tags that
+        meet the validity criteria of [[!RFC5646]] section 2.2.9 that can be
+        verified without reference to the IANA Language Subtag Registry are
+        considered structurally valid. </p>
         <p>
           The <dfn>CanonicalizeLocaleList</dfn>, <dfn>BestAvailableLocale</dfn>
           <dfn>LookupMatcher,</dfn> <dfn>BestFitMatcher</dfn>,
           <dfn>ResolveLocale</dfn>, <dfn>LookupSupportedLocales</dfn>
-          BestFitSupportedLocales SupportedLocales. In the algorithms, to
-          <dfn>ignore</dfn> means that the user agent MUST act as if the author
-          had not declared the particular member in the application manifest
-          document.
-        </p>
+        <dfn>BestFitSupportedLocales</dfn> <dfn>SupportedLocales</dfn>. </p>
       </section>
       <section>
         <h3>
@@ -466,7 +454,6 @@ var respecConfig = {
           </li>
         </ol>
       </section>
-    </section>
     <section>
       <h3>
         <code title="">name</code> member
@@ -491,7 +478,7 @@ var respecConfig = {
         <li>Let <var>key</var> be the string "<code>name</code>".
         </li>
         <li>Let&nbsp;<var>present</var>&nbsp;be the result of calling
-        [[HasOwnProperty]]&nbsp;internal method
+        [[[HasOwnProperty]]]&nbsp;internal method
         of&nbsp;<var>manifest</var>&nbsp;with argument&nbsp;<var>key</var>.
         </li>
         <li>If <var>present</var> is <code>false</code>, return an error and
@@ -573,7 +560,7 @@ var respecConfig = {
         <li>Let <var>key</var> be "<code>default_locale</code>".
         </li>
         <li>Let&nbsp;<var>present</var>&nbsp;be the result of calling
-        [[HasOwnProperty]]&nbsp;internal method
+        [[[HasOwnProperty]]]&nbsp;internal method
         of&nbsp;<var>manifest</var>&nbsp;with argument&nbsp;<var>key</var>.
         </li>
         <li>If <var>present</var> is <var>true</var>:
@@ -616,7 +603,7 @@ var respecConfig = {
         loaded</a> when the application is <a>launched</a>.
       </p>
       <p>
-        The <dfn>steps for processing the <code>default_locale</code>
+        The <dfn>steps for processing the <code>launch_path</code>
         member</dfn> are given by the following algorithm. The algorithm
         returns either a string, and error, or <code>undefined</code>.
       </p>
@@ -626,7 +613,7 @@ var respecConfig = {
         <li>Let <var>key</var> be the string "<code>launch_path</code>".
         </li>
         <li>Let&nbsp;<var>present</var>&nbsp;be the result of calling
-        [[HasOwnProperty]]&nbsp;internal method
+        [[[HasOwnProperty]]]&nbsp;internal method
         of&nbsp;<var>manifest</var>&nbsp;with argument&nbsp;<var>key</var>.
         </li>
         <li>If present is <code>true</code>:
@@ -705,7 +692,7 @@ var respecConfig = {
         <li>Let <var>key</var> be the string "<code>appcache_path</code>".
         </li>
         <li>Let&nbsp;<var>present</var>&nbsp;be the result of calling
-        [[HasOwnProperty]]&nbsp;internal method
+        [[[HasOwnProperty]]]&nbsp;internal method
         of&nbsp;<var>manifest</var>&nbsp;with argument&nbsp;<var>key</var>.
         </li>
         <li>if <var>present</var> is <code>true</code>:
@@ -748,7 +735,7 @@ var respecConfig = {
         <li>Let <var>key</var> be the string "version".
         </li>
         <li>Let&nbsp;<var>present</var>&nbsp;be the result of calling
-        [[HasOwnProperty]]&nbsp;internal method
+        [[[HasOwnProperty]]]&nbsp;internal method
         of&nbsp;<var>manifest</var>&nbsp;with argument&nbsp;<var>key</var>.
         </li>
         <li>If <var>present</var> is <code>true</code>:
@@ -830,7 +817,7 @@ var respecConfig = {
         defaults to <var>false</var>.
       </p>
       <p>
-        The <var>steps for processing the <code>fullscreen</code> member</var>
+        The <dfn>steps for processing the <code>fullscreen</code> member</dfn>
         are given by the following algorithm:
       </p>
       <ol>
@@ -1108,6 +1095,7 @@ var respecConfig = {
           </p>
         </section>
       </section>
+    </section>
     </section>
     <section>
       <h2>
@@ -1786,7 +1774,7 @@ var respecConfig = {
           </li>
         </ul>
       </section>
-    </section>
+  </section>
     <section>
       <h2>
         Packaged applications
@@ -1874,6 +1862,11 @@ var respecConfig = {
         <h2>
           Manifest
         </h2>
+       
+       <p>
+        Inside an application package, the <dfn>valid application
+        manifest filename</dfn> is <code>manifest.webapp</code>.
+      </p>
         <p>
           A <a>packaged application</a> MUST have a copy of its <a>application
           manifest</a> outside of the package so it can be used for
