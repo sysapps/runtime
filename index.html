@@ -9,7 +9,7 @@
     "remove">
 </script>
     <script class='remove'>
-  var respecConfig = {
+var respecConfig = {
         specStatus:           "ED",
         shortName:            "runtime",
 
@@ -44,7 +44,7 @@
       };
     </script>
     <style>
-  .todo { display: none; }
+.todo { display: none; }
     </style>
   </head>
   <body>
@@ -960,19 +960,6 @@
               true if there is an installed application fulfilling the
               condition, otherwise <code>result</code> should be set to false.
             </dd>
-            <dt class="todo">
-              checkInstalled() could be synchronous. Seems way more convenient.
-            </dt>
-            <dd class="todo">
-              <ul>
-                <li>What's the real difference between getSelf() and
-                getInstalled()?
-                </li>
-                <li>Can an application be not installed but still in the
-                registry? How?
-                </li>
-              </ul>
-            </dd>
             <dt>
               attribute ApplicationManagement management
             </dt>
@@ -987,6 +974,19 @@
               </ul>
             </dd>
           </dl>
+          <div class='todo'>
+            <ul>
+              <li>checkInstalled() could be synchronous. Seems way more
+              convenient.
+              </li>
+              <li>What's the real difference between getSelf() and
+              getInstalled()?
+              </li>
+              <li>Can an application be not installed but still in the
+              registry? How?
+              </li>
+            </ul>
+          </div>
         </section>
       </section>
       <section>
