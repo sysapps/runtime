@@ -288,6 +288,43 @@ var respecConfig = {
         <li>Optionally, <a>ignore</a> all other members.
         </li>
       </ol>
+      
+      <section>
+        <h3>
+          Types and bindings
+        </h3>
+        <p>
+          As the manifest format is a JSON document, this doucment relies
+          on the types defined in  [[!RFC4627]]  specification: namely <dfn id=
+          "json-object">object</dfn>, <dfn id="json-array">array</dfn>,
+          <dfn id="json-number">number</dfn>, and <dfn id=
+          "json-string">string</dfn>. Strict validation checking to types is
+          not enforced by this specification. Instead, each member definition
+          defines the steps to required to process a particular member.
+          Processing relies on
+        </p>
+        <p>
+          In additon, for the purpose of validity checking, this specification
+          defines the following types:
+        </p>
+        <dl>
+          <dt>
+            <dfn>relative URL</dfn>
+          </dt>
+          <dd>
+            The concept of a relative URL is defined in the [[!URL]]
+            specification.
+          </dd>
+          <dt>
+            <dfn>absolute URL</dfn>
+          </dt>
+          <dd>
+            The concept of an absolute URL is defined in the [[!URL]]
+            specification.
+          </dd>
+        </dl>
+      </section>
+      
       <section class="informative">
         <h3>
           Example manifest
@@ -354,7 +391,7 @@ var respecConfig = {
           Internationalization and localization
         </h3>
         <p>
-          The <dfn>user agent locales</dfn> is an ordered list of
+          The <dfn>user agent's locales</dfn> is an ordered list of
           <a title="language tag">language tags</a> that are used to represent the end-user's
           language(s) and localization preference for experiencing content;
           these are essentially equivalent to the language tags sent by the
@@ -407,7 +444,7 @@ var respecConfig = {
           manifest</a> that can appear in the <var>locales</var> member.
         </p>
         <p>
-          The <dfn>steps for retrieving a localized member from the
+          The <dfn>steps for retrieving a localizable member from the
           manifest</dfn> are given by the following algorithm. The algorithm
           prioritizes returning the localized version of a member over one
           where the locale is unknown. The algorithm returns either a value
@@ -418,7 +455,7 @@ var respecConfig = {
           of the <a>application manifest</a>.
           </li>
           <li>Let <var>default app locale</var> be the string that represents
-          the <a>default locale</a> for the application manifest.
+          the default locale for the application manifest.
           </li>
           <li>Let <var>indentifier</var> be a string that is the name of the
           member being sought.
@@ -536,11 +573,11 @@ var respecConfig = {
         <a>language tag</a> that represents:
       </p>
       <ul>
-        <li>The <a>locale</a> of the content of members at the root of the
+        <li>The locale of the content of members at the root of the
         manifest.
         </li>
-        <li>The <a>default locale</a> that the user agent will use in case the
-        <a>user agent's locales</a> do not match any <a>localized members</a>.
+        <li>The default locale that the user agent will use in case the
+        <a>user agent's locales</a> do not match any localized members.
         </li>
       </ul>
       <p>
@@ -574,7 +611,7 @@ var respecConfig = {
             <li>Let <var>tag</var> be <a>ToString</a>(<var>value</var>).
             </li>
             <li>Let <var>valid tag</var> the result of calling the abstract
-            operation <a>IsStructurallyValidLanguageTag</a> with <var>tag</var>
+            operation IsStructurallyValidLanguageTag with <var>tag</var>
             as the argument.
             </li>
             <li>If <var>valid tag</var> is <code>true</code>, then:
@@ -976,49 +1013,14 @@ var respecConfig = {
           </dd>
         </dl>
       </section>
-      <section>
-        <h2>
-          Types and bindings
-        </h2>
-        <p>
-          As the manifest format is a JSON document, this doucment relies
-          on the types defined in  [[!RFC4627]]  specification: namely <dfn id=
-          "json-object">object</dfn>, <dfn id="json-array">array</dfn>,
-          <dfn id="json-number">number</dfn>, and <dfn id=
-          "json-string">string</dfn>. Strict validation checking to types is
-          not enforced by this specification. Instead, each member definition
-          defines the steps to required to process a particular member.
-          Processing relies on
-        </p>
-        <p>
-          In additon, for the purpose of validity checking, this specification
-          defines the following types:
-        </p>
-        <dl>
-          <dt>
-            <dfn>relative URL</dfn>
-          </dt>
-          <dd>
-            The concept of a relative URL is defined in the [[!URL]]
-            specification.
-          </dd>
-          <dt>
-            <dfn>absolute URL</dfn>
-          </dt>
-          <dd>
-            The concept of an absolute URL is defined in the [[!URL]]
-            specification.
-          </dd>
-        </dl>
       </section>
       <section>
         <h2>
           icons object and its members
         </h2>
         <p>
-          The icons object is an object that represents the icons suitable for
-          various dimensions.
-        </p>
+          The <dfn>icons object</dfn> is an object that represents the icons suitable for
+        various dimensions. </p>
         <p>
           Paths beginning with "<code>/</code>" are treated as relative to the
           origin of the app.
@@ -1060,8 +1062,8 @@ var respecConfig = {
             <a>default_locale</a> needs to also be set.
           </p>
         </section>
-      </section>
-      <section>
+    </section>
+    <section>
         <h2>
           Developer object and its members
         </h2>
@@ -1104,7 +1106,6 @@ var respecConfig = {
           </p>
         </section>
       </section>
-    </section>
     </section>
     <section>
       <h2>
