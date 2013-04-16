@@ -929,23 +929,24 @@ var respecConfig = {
             </dt>
             <dd>
               The UA SHOULD return a <a>DOMRequest</a> object and
-              asynchronously get all applications that have an origin matching
-              the caller's origin. [[!ORIGIN]]<br>
-              When those applications are collected, the UA SHOULD send a
-              <code>success</code> event to the <a>DOMRequest</a> object and
-              populate its <code>request</code> attribute with an array of
-              <a>Application</a> objects representing the applications.
+              asynchronously check if the current context is an application
+              context.<br>
+              When the check is done, the UA SHOULD send a <code>success</code>
+              event to the <a>DOMRequest</a> object and sets its
+              <code>result</code> attribute to the <a>Application</a> object
+              representing the current context or <code>null</code> if the
+              current context is not an application context.
             </dd>
             <dt>
               DOMRequest getInstalled()
             </dt>
             <dd>
               The UA SHOULD return a <a>DOMRequest</a> object and
-              asynchronously get all applications that have an origin matching
+              asynchronously get all applications that have been installed by
               the caller's origin. [[!ORIGIN]]<br>
               When those applications are collected, the UA SHOULD send a
               <code>success</code> event to the <a>DOMRequest</a> object and
-              populate its <code>request</code> attribute with an array of
+              populate its <code>result</code> attribute with an array of
               <a>Application</a> objects representing the applications.
             </dd>
             <dt>
@@ -979,9 +980,6 @@ var respecConfig = {
             <ul>
               <li>checkInstalled() could be synchronous. Seems way more
               convenient.
-              </li>
-              <li>What's the real difference between getSelf() and
-              getInstalled()?
               </li>
               <li>Can an application be not installed but still in the
               registry? How?
