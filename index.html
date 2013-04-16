@@ -981,9 +981,6 @@ var respecConfig = {
               <li>checkInstalled() could be synchronous. Seems way more
               convenient.
               </li>
-              <li>Can an application be not installed but still in the
-              registry? How?
-              </li>
             </ul>
           </div>
         </section>
@@ -1035,8 +1032,7 @@ var respecConfig = {
           </dl>
           <p>
             The <code>getAll</code> method SHOULD return a <a>DOMRequest</a>
-            object and asynchronously get all applications currently in the
-            application registry.<br>
+            object and asynchronously get all installed applications.<br>
             When those applications are collected, the UA SHOULD send a
             <code>success</code> event to the <a>DOMRequest</a> object and
             populate its <code>request</code> attribute with an array of
