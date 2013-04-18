@@ -2011,38 +2011,16 @@ var respecConfig = {
       </section>
       <section>
         <h2>
-          URI of a packaged file
+          Origin and dereferring URLs
         </h2>
         <p>
-          A file contained in a <a>packaged application</a> MUST have an URI
-          with the following rules:
-        </p>
-        <ul>
-          <li>The <code>scheme</code> of the URI MUST be <i>app</i>.
-          </li>
-          <li>The <code>authority</code> of the URI MUST be an identifier
-          unique for each applications. That means, two files from different
-          applications can't share the same <code>authority</code> but two
-          files from the same application will.
-          </li>
-          <li>The <code>path</code> of the URI MUST be the file name.
-          </li>
-          <li>Any other parts of the URI MUST be empty.
-          </li>
-        </ul>
-        <p>
-          For more information about URI's, refer to [[!RFC3986]].
-        </p>
-        <p>
-          For example, the URI of <i>index.html</i> from an application can be:
-          <i>app://e35b8412-7451-46e7-ab29-0cee24fd486a/index.html</i>.
-        </p>
-        <p>
-          The URI of a packaged file is defined such as two files from the same
-          <a>packaged application</a> MUST share the same origin.<br>
-          A file from a <a>packaged application</a> and any other resource
-          outside of this application (an application or not, packaged or not)
-          MUST not share the same origin. [[!ORIGIN]]
+          The origin of each instance of a packaged application MUST be
+          universally unique for the life of that application (i.e., until it
+          is uninstalled) [[!ORIGIN]]. As such, it is RECOMMENDED that a user
+          agent synthesize an origin for a packaged application using the
+          <code>app:</code> URI scheme [[!APP-URI]]. Relative URLs to resources
+          within the packaged application can then be dereferenced using the
+          dereferencing rules specified in the [[!APP-URI]] specification.
         </p>
       </section>
       <section>
